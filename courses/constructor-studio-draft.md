@@ -1,5 +1,9 @@
 # Constructor Studio Academy - Course Blueprint and Table of Contents
 
+> NOTE: These course materials are a draft, generated from the following source repositories:
+> - https://github.com/cyberfabric/cyber-constructor (to be renamed `constructor-studio`)
+> - https://github.com/cyberfabric/cyber-constructor-kit-sdlc (to be renamed `constructor-studio-kit-sdlc`)
+
 ## 1. Course Frame
 
 Description: This course teaches Constructor Studio from first principles through advanced operation and extension authoring. It uses the established Constructor Studio terminology throughout the learner-facing material.
