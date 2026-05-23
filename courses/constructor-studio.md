@@ -53,7 +53,7 @@ Description: Learners build a simple mental model: Constructor Studio is the wor
 #### Lessons and Checkpoints
 
 - 2.1.1 The core problem: AI work without durable control surfaces
-- 2.1.2 Constructor Studio as a repo-attached delivery system
+- 2.1.2 Constructor Studio as a repo-attached Spec Driven Development system
 - 2.1.3 Inspectable artifacts versus chat memory
 - 2.1.4 Deterministic checks versus model reasoning
 - 2.1.5 Checkpoint: explain the system in one paragraph
@@ -106,7 +106,8 @@ Description: This module establishes the language used across the rest of the co
 - 2.5.3 Workflows, skills, commands, and generated integrations
 - 2.5.4 Kits, templates, rules, checklists, and examples
 - 2.5.5 Workspace sources and cross-repo resolution
-- 2.5.6 Checkpoint: vocabulary matching exercise
+- 2.5.6 Language complexity setting and output language control
+- 2.5.7 Checkpoint: vocabulary matching exercise
 
 ## 3. Getting Started - Installation, Setup, and First Use
 
@@ -122,7 +123,8 @@ Description: Learners prepare the development environment required for Construct
 - 3.1.2 Optional tools: GitHub CLI for PR workflows
 - 3.1.3 Supported hosts and practical differences
 - 3.1.4 Environment checks before installation
-- 3.1.5 Lab: verify prerequisites
+- 3.1.5 Running `cfs doctor` to verify environment health
+- 3.1.6 Lab: verify prerequisites
 
 ### 3.2 Installing the CLI
 
@@ -294,6 +296,20 @@ Description: This module gives learners practical prompt shapes for real work wi
 - 4.8.5 Context-bounded execution prompts
 - 4.8.6 Checkpoint: rewrite weak prompts
 
+### 4.9 How Constructor Studio Routes Workflows
+
+Description: This module explains the Protocol Guard and execution protocol that determines which files the agent loads, how variables are resolved, and why specific rules and specs are matched for each request. Understanding this mechanism helps operators debug routing issues and predict agent behavior.
+
+#### Lessons and Checkpoints
+
+- 4.9.1 Protocol Guard purpose and load sequence
+- 4.9.2 Variable resolution with `cfs info`
+- 4.9.3 Registry understanding and target determination
+- 4.9.4 WHEN-clause spec matching
+- 4.9.5 Navigation rules: ALWAYS open, OPEN and follow
+- 4.9.6 Debugging routing problems
+- 4.9.7 Lab: trace how a workflow request is routed
+
 ## 5. Artifacts, Traceability, and Validation
 
 Description: This part goes deeper into the core evidence model: artifact registries, IDs, references, validation, and code traceability.
@@ -385,8 +401,10 @@ Description: Learners use Constructor Studio in projects that already have code 
 - 6.1.1 Brownfield risks
 - 6.1.2 Task-matched project rules
 - 6.1.3 Auto-config purpose and outputs
-- 6.1.4 Reviewing inferred rules
-- 6.1.5 Lab: run a brownfield understanding pass
+- 6.1.4 When the agent offers auto-config: the brownfield detection gate
+- 6.1.5 Reviewing and refining inferred rules
+- 6.1.6 Re-running auto-config after project evolution
+- 6.1.7 Lab: run auto-config and review inferred project rules
 
 ### 6.2 Large Task Handling
 
@@ -478,7 +496,8 @@ Description: This module covers common setup, activation, validation, and workfl
 - 6.8.4 Missing or stale AGENTS block
 - 6.8.5 Validation failure triage
 - 6.8.6 Plan recovery after interruption
-- 6.8.7 Lab: diagnose a broken setup
+- 6.8.7 Using `cfs doctor` for environment diagnosis
+- 6.8.8 Lab: diagnose a broken setup
 
 ## 7. Kit and Extension Author Track - Building the System Surface
 
@@ -536,81 +555,96 @@ Description: This module goes deeper into the authoring rules that drive generat
 - 7.4.5 Avoiding vague author instructions
 - 7.4.6 Lab: strengthen a weak checklist
 
-### 7.5 Workflow Authoring
+### 7.5 Behavior Description Language (CDSL)
+
+Description: This module teaches the Cypilot DSL (CDSL) used for writing algorithms, actor flows, and state machines in DESIGN and FEATURE artifacts. CDSL is a plain-English behavior description language with structured control flow keywords, mandatory phase tokens, instruction IDs, and implementation checkboxes.
+
+#### Lessons and Checkpoints
+
+- 7.5.1 CDSL purpose and when to use it
+- 7.5.2 Basic format: numbered lists, bold keywords, plain English
+- 7.5.3 Control flow keywords: IF, FOR EACH, WHILE, TRY/CATCH, PARALLEL, MATCH
+- 7.5.4 Phase tokens, instruction IDs, and implementation checkboxes
+- 7.5.5 State machines in CDSL
+- 7.5.6 Validation rules: required and prohibited patterns
+- 7.5.7 Lab: write a behavior specification in CDSL
+
+### 7.6 Workflow Authoring
 
 Description: Learners create and maintain workflows that route user intent into reliable agent behavior. The module emphasizes navigation rules, fail-stop gates, and context hygiene.
 
 #### Lessons and Checkpoints
 
-- 7.5.1 Workflow purpose and frontmatter
-- 7.5.2 ALWAYS open and follow rules
-- 7.5.3 WHEN conditions
-- 7.5.4 Phase structure and gates
-- 7.5.5 Output contracts
-- 7.5.6 Lab: design a small kit workflow
+- 7.6.1 Workflow purpose and frontmatter
+- 7.6.2 ALWAYS open and follow rules
+- 7.6.3 WHEN conditions
+- 7.6.4 Phase structure and gates
+- 7.6.5 Output contracts
+- 7.6.6 Lab: design a small kit workflow
 
-### 7.6 Skill Authoring
+### 7.7 Skill Authoring
 
 Description: This module teaches skills as host-visible entry points that route into workflows and methods. Learners write concise skill descriptions that trigger correctly.
 
 #### Lessons and Checkpoints
 
-- 7.6.1 Skill role in Constructor Studio
-- 7.6.2 `SKILL.md` structure
-- 7.6.3 Description quality and trigger behavior
-- 7.6.4 Generated versus hand-maintained skills
-- 7.6.5 Lab: write a skill entry point
+- 7.7.1 Skill role in Constructor Studio
+- 7.7.2 `SKILL.md` structure
+- 7.7.3 Description quality and trigger behavior
+- 7.7.4 Generated versus hand-maintained skills
+- 7.7.5 Lab: write a skill entry point
 
-### 7.7 Command Naming for Kits
+### 7.8 Command Naming for Kits
 
 Description: Learners apply the Constructor Studio command naming model to kit workflows. The module standardizes names such as `/cf-{kit}-{name}` and teaches how to keep command sets clear.
 
 #### Lessons and Checkpoints
 
-- 7.7.1 Core command namespace
-- 7.7.2 Kit command namespace
-- 7.7.3 Naming collisions and reserved names
-- 7.7.4 Host-specific aliases
-- 7.7.5 Lab: name a kit command set
+- 7.8.1 Core command namespace
+- 7.8.2 Kit command namespace
+- 7.8.3 Naming collisions and reserved names
+- 7.8.4 Host-specific aliases
+- 7.8.5 Lab: name a kit command set
 
-### 7.8 Subagents and Delegation
+### 7.9 Subagents and Delegation
 
 Description: This module teaches when and how specialized agents support planning, phase compilation, phase execution, PR review, and large change orchestration. Learners understand host support differences and fallback behavior.
 
 #### Lessons and Checkpoints
 
-- 7.8.1 Subagent responsibilities
-- 7.8.2 Phase compiler agent
-- 7.8.3 Phase runner agent
-- 7.8.4 PR review agent
-- 7.8.5 Delegation and RalphEx-style orchestration
-- 7.8.6 Lab: design a subagent role
+- 7.9.1 Subagent responsibilities
+- 7.9.2 Phase compiler agent
+- 7.9.3 Phase runner agent
+- 7.9.4 PR review agent
+- 7.9.5 Delegation and RalphEx-style orchestration
+- 7.9.6 Lab: design a subagent role
 
-### 7.9 Project-Level Extensibility
+### 7.10 Project-Level Extensibility
 
 Description: Learners extend behavior inside a single project without changing the core platform. This module covers local rules, workflows, commands, and host-specific generated surfaces.
 
 #### Lessons and Checkpoints
 
-- 7.9.1 Project rules
-- 7.9.2 Project specs
-- 7.9.3 Local workflows and commands
-- 7.9.4 Generated host integrations
-- 7.9.5 Governance for local extensions
-- 7.9.6 Lab: add a project-specific rule
+- 7.10.1 Project rules
+- 7.10.2 Project specs
+- 7.10.3 Local workflows and commands
+- 7.10.4 Generated host integrations
+- 7.10.5 Governance for local extensions
+- 7.10.6 Lab: add a project-specific rule
 
-### 7.10 Testing and Validating Extensions
+### 7.11 Testing and Validating Extensions
 
 Description: This module teaches authors to validate extension behavior before publishing or rolling it into team use. Learners combine deterministic checks, semantic reviews, and fixture projects.
 
 #### Lessons and Checkpoints
 
-- 7.10.1 Structural validation for kits
-- 7.10.2 Fixture projects
-- 7.10.3 Prompt and workflow reviews
-- 7.10.4 Regression tests for generated surfaces
-- 7.10.5 Release checklist for kit changes
-- 7.10.6 Lab: validate a custom kit slice
+- 7.11.1 Structural validation for kits
+- 7.11.2 Using `cfs self-check` to validate kit examples against templates
+- 7.11.3 Fixture projects
+- 7.11.4 Prompt and workflow reviews
+- 7.11.5 Regression tests for generated surfaces
+- 7.11.6 Release checklist for kit changes
+- 7.11.7 Lab: validate a custom kit slice
 
 ## 8. Governance, CI, and Team Adoption
 
@@ -636,11 +670,12 @@ Description: This module teaches how deterministic checks move from local develo
 #### Lessons and Checkpoints
 
 - 8.2.1 Local checks before PR
-- 8.2.2 `cfs validate` in CI
-- 8.2.3 Local-only versus workspace validation
-- 8.2.4 Exit code handling
-- 8.2.5 Reporting validation results
-- 8.2.6 Lab: design a CI validation gate
+- 8.2.2 Git pre-commit hooks with `cfs hook install`
+- 8.2.3 `cfs validate` in CI
+- 8.2.4 Local-only versus workspace validation
+- 8.2.5 Exit code handling
+- 8.2.6 Reporting validation results
+- 8.2.7 Lab: design a CI validation gate
 
 ### 8.3 Review Readiness
 
@@ -794,7 +829,7 @@ Description: This path is for developers, technical leads, and product-minded en
 - Complete Part 4: Operator Track
 - Complete Part 5: Artifacts, Traceability, and Validation
 - Complete Part 6 modules 6.1 through 6.8 as needed
-- Complete Part 7 modules 7.1 through 7.5
+- Complete Part 7 modules 7.1 through 7.6
 - Complete Part 9.2 Operator Capstone Path
 
 ### B.2 Kit and Extension Author Path
