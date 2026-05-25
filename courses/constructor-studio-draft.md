@@ -607,7 +607,7 @@ Description: This module goes deeper into the authoring rules that drive generat
 
 ### 8.5 Behavior Description Language (CDSL)
 
-Description: This module teaches the Cypilot DSL (CDSL) used for writing algorithms, actor flows, and state machines in DESIGN and FEATURE artifacts. CDSL is a plain-English behavior description language with structured control flow keywords, mandatory phase tokens, instruction IDs, and implementation checkboxes.
+Description: This module teaches the Constructor DSL (CDSL) used for writing algorithms, actor flows, and state machines in DESIGN and FEATURE artifacts. CDSL is a plain-English behavior description language with structured control flow keywords, mandatory phase tokens, instruction IDs, and implementation checkboxes.
 
 #### Lessons and Checkpoints
 
