@@ -4,9 +4,20 @@
 > - https://github.com/cyberfabric/cyber-constructor (to be renamed `constructor-studio`)
 > - https://github.com/cyberfabric/cyber-constructor-kit-sdlc (to be renamed `constructor-studio-kit-sdlc`)
 
-## 1. Problem Statement and Target Audience
+## 1. Target Audience, Problem, and Solution
 
-### 1.1 Nature of the Software Development Process
+### 1.1 Target Audience
+
+This course addresses practitioners who work at the intersection of AI-assisted requirements and design generation, coding, and structured software delivery:
+
+- **Product-minded engineers** who translate business requirements into structured design and want to preserve intent through implementation.
+- **Technical leads and architects** responsible for delivery quality, traceability, and review readiness across teams.
+- **Developers** who use AI coding tools daily and need a reliable way to keep requirements, design, and code aligned.
+- **Quality Assurance (QA) engineers** who oversee requirements, design, implementation, and tests to ensure changes remain verifiable, consistent, and review-ready.
+- **DevOps and platform engineers** who integrate validation and traceability checks into CI pipelines.
+- **Kit and extension authors** who build reusable workflow packages, artifact kinds, and project rules for teams.
+
+### 1.2 Nature of the Software Development Process
 
 Software development is a chain of lossy transformations from human intent to executable code:
 
@@ -16,7 +27,7 @@ Software development is a chain of lossy transformations from human intent to ex
 
 At every stage the process involves acceptance, transformation, validation, and feedback. Everything is non-deterministic and lossy.
 
-### 1.2 How AI Changes the Development Flow
+### 1.3 How AI Changes the Development Flow
 
 AI has changed development flow velocity drastically:
 
@@ -28,7 +39,7 @@ But AI does not automatically guarantee **fidelity** — requirements, design, a
 
 **Key question:** how to improve quality and speed of acceptance, transformation, validation, and feedback?
 
-### 1.3 Typical Tooling Problem
+### 1.4 Typical Tooling Problem
 
 The ideal system keeps intent, design, and code in one integrated ecosystem. Current tooling falls short:
 
@@ -38,16 +49,13 @@ The ideal system keeps intent, design, and code in one integrated ecosystem. Cur
 - Documents and code comments quickly become outdated and require manual housekeeping.
 - Developers use their own prompts that are not necessarily complete and optimized for the projects.
 
-### 1.4 Target Audience
+### 1.5 What Constructor Studio Is and Who It Is For
 
-This course addresses practitioners who work at the intersection of AI-assisted requirements and design generation, coding and structured software delivery:
+Constructor Studio is a repo-attached workflow, context, and validation system for AI-native software delivery. It works with AI coding hosts and agentic IDEs such as Claude Code, OpenAI Codex, Cursor, Windsurf, and similar tools — instead of trying to replace them.
 
-- **Product-minded engineers** who translate business requirements into structured design and want to preserve intent through implementation.
-- **Technical leads and architects** responsible for delivery quality, traceability, and review readiness across teams.
-- **Software developers and engineers** who use AI coding tools daily and need a reliable way to keep requirements, design, and code aligned.
-- **Quality Assurance (QA) engineers** who oversee requirements, design, implementation, and tests to ensure changes remain verifiable, consistent, and review-ready.
-- **DevOps and platform engineers** who integrate validation and traceability checks into CI pipelines.
-- **Kit and extension authors** who build reusable workflow packages, artifact kinds, and project rules for teams.
+It helps development teams keep requirements, design, plans, code, and review evidence aligned through inspectable artifacts, structured workflows, deterministic checks, and traceability across the delivery lifecycle.
+
+Constructor Studio is most useful for developers, architects, technical leads, QA, DevOps who need more than one-shot generation and need to control full project lifecycle - initial development, new feature implementation, later re-achitecture, etc.
 
 ---
 
@@ -55,17 +63,16 @@ This course addresses practitioners who work at the intersection of AI-assisted 
 
 Description: This course teaches Constructor Studio from first principles through advanced operation and extension authoring. It uses the established Constructor Studio terminology throughout the learner-facing material.
 
-### 2.1 Audience and Tracks
+### 2.1 Learning Paths and Tracks
 
 Description: The course has one shared foundation, then separates into an Operator track and a Kit and Extension Author track. Learners can complete the Operator track alone or continue into authoring and certification work.
 
 #### Lessons and Checkpoints
 
-- 2.1.1 Who the course is for
-- 2.1.2 Operator path: using Constructor Studio in real projects
-- 2.1.3 Author path: building kits, workflows, skills, and extensions
-- 2.1.4 Recommended paths by role
-- 2.1.5 Checkpoint: choose your learner path
+- 2.1.1 Operator path: using Constructor Studio in real projects
+- 2.1.2 Author path: building kits, workflows, skills, and extensions
+- 2.1.3 Recommended paths by role
+- 2.1.4 Checkpoint: choose your learner path
 
 ### 2.2 Command and Terminology Standard
 
@@ -88,10 +95,11 @@ Description: The course uses one running repository project so each concept beco
 #### Lessons and Checkpoints
 
 - 2.3.1 The running course repository
-- 2.3.2 What learners will build
-- 2.3.3 Labs, checkpoints, and capstone rules
-- 2.3.4 Evidence required for completion
-- 2.3.5 Certification rubric overview
+- 2.3.2 Test application Git repository with full app source code and configured Constructor Studio (TODO: add exact repository link)
+- 2.3.3 What learners will build
+- 2.3.4 Labs, checkpoints, and capstone rules
+- 2.3.5 Evidence required for completion
+- 2.3.6 Certification rubric overview
 
 ## 3. Foundation - Mental Model and Operating Principles
 
@@ -99,15 +107,18 @@ Description: This part explains what Constructor Studio is, where it fits around
 
 ### 3.1 What Constructor Studio Is
 
-Description: Learners build a simple mental model: Constructor Studio is the workflow, context, and validation layer around an AI coding tool. It helps teams keep requirements, design, plans, and code aligned. This module builds on the problem statement and audience context established in Part 1.
+Description: Learners build a simple mental model: Constructor Studio is the workflow, context, and validation layer around an AI coding tool. It helps teams keep requirements, design, plans, and code aligned. This module builds on the audience, problem, and solution framing established in Part 1.
 
 #### Lessons and Checkpoints
 
 - 3.1.1 The core problem: AI accelerates development but does not guarantee fidelity (see Part 1)
-- 3.1.2 Constructor Studio as a repo-attached Spec Driven Development system
-- 3.1.3 Inspectable artifacts versus chat memory
-- 3.1.4 Deterministic checks versus model reasoning
-- 3.1.5 Checkpoint: explain the system in one paragraph
+- 3.1.2 Why Claude Code or OpenAI Codex alone is not enough for controlled delivery
+- 3.1.3 Why an agentic IDE alone is not enough for end-to-end traceability and validation
+- 3.1.4 Constructor Studio as a repo-attached Spec Driven Development system
+- 3.1.5 Constructor Studio works with Claude Code, Codex, Cursor, Windsurf, and other agentic tools
+- 3.1.6 Inspectable artifacts versus chat memory
+- 3.1.7 Deterministic checks versus model reasoning
+- 3.1.8 Checkpoint: explain the system in one paragraph
 
 ### 3.2 Actors and Responsibilities
 
@@ -160,6 +171,19 @@ Description: This module establishes the language used across the rest of the co
 - 3.5.6 Language complexity setting and output language control
 - 3.5.7 Checkpoint: vocabulary matching exercise
 
+### 3.6 Comparing SDD Approaches and Tools
+
+Description: This module helps learners distinguish between prompt-first, template-first, and artifact-first Spec Driven Development approaches. It clarifies how Constructor Studio relates to tools such as OpenSpec and BMAD, and why different SDD tools optimize for different stages of the delivery process.
+
+#### Lessons and Checkpoints
+
+- 3.6.1 What Spec Driven Development means in practice
+- 3.6.2 Prompt-first versus template-first versus artifact-first SDD
+- 3.6.3 Generation-focused versus validation-focused SDD systems
+- 3.6.4 OpenSpec, BMAD, and Constructor Studio: differences in scope and control surface
+- 3.6.5 IDE-native versus repo-attached SDD workflows
+- 3.6.6 Checkpoint: choose the right SDD approach for a project context
+
 ## 4. Getting Started - Installation, Setup, and First Use
 
 Description: This part takes a new learner from no installed tool to a working repository with generated agent integrations and a first useful workflow run.
@@ -183,7 +207,7 @@ Description: This module introduces `cfs` as the Constructor Studio CLI. Learner
 
 #### Lessons and Checkpoints
 
-- 4.2.1 Installing `cfs`
+- 4.2.1 Installing Constructor Studio via `cfs`
 - 4.2.2 Verifying the installed executable
 - 4.2.3 Checking CLI version
 - 4.2.4 Understanding global proxy behavior
@@ -197,11 +221,11 @@ Description: Learners initialize Constructor Studio in a repository and inspect 
 #### Lessons and Checkpoints
 
 - 4.3.1 Running `cfs init`
-- 4.3.2 Choosing the setup directory
+- 4.3.2 Configuring Constructor Studio for your current repository
 - 4.3.3 Generated versus user-editable files
 - 4.3.4 Project config and setup directory layout
 - 4.3.5 Root AGENTS navigation block
-- 4.3.6 Lab: initialize a sandbox repository
+- 4.3.6 Lab: initialize and configure the current repository
 
 ### 4.4 Generating Host Integrations
 
