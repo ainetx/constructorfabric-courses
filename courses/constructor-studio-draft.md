@@ -45,6 +45,7 @@ This course addresses practitioners who work at the intersection of AI-assisted 
 - **Product-minded engineers** who translate business requirements into structured design and want to preserve intent through implementation.
 - **Technical leads and architects** responsible for delivery quality, traceability, and review readiness across teams.
 - **Software developers and engineers** who use AI coding tools daily and need a reliable way to keep requirements, design, and code aligned.
+- **Quality Assurance (QA) engineers** who oversee requirements, design, implementation, and tests to ensure changes remain verifiable, consistent, and review-ready.
 - **DevOps and platform engineers** who integrate validation and traceability checks into CI pipelines.
 - **Kit and extension authors** who build reusable workflow packages, artifact kinds, and project rules for teams.
 
