@@ -720,12 +720,11 @@ Description: This module teaches how deterministic checks move from local develo
 #### Lessons and Checkpoints
 
 - 9.2.1 Local checks before PR
-- 9.2.2 Git pre-commit hooks with `cfs hook install`
-- 9.2.3 `cfs validate` in CI
-- 9.2.4 Local-only versus workspace validation
-- 9.2.5 Exit code handling
-- 9.2.6 Reporting validation results
-- 9.2.7 Lab: design a CI validation gate
+- 9.2.2 `cfs validate` in CI
+- 9.2.3 Local-only versus workspace validation
+- 9.2.4 Exit code handling
+- 9.2.5 Reporting validation results
+- 9.2.6 Lab: design a CI validation gate
 
 ### 9.3 Review Readiness
 
