@@ -97,7 +97,7 @@ Starter `docs/course-notes.md` template:
 |---|---|---|---|
 |  |  |  |  |
 
-## Optional Brownfield/Workspace Notes
+## Brownfield/Workspace Evidence
 | Topic | Evidence | Impact on this repo |
 |---|---|---|
 |  |  |  |
@@ -2115,7 +2115,7 @@ List the actual edited files only.
 | npm test | Todo API behavior |  |  |  |
 | npm run build | React UI build |  |  |  |
 | cfs validate --local-only | Studio local validation |  |  |  |
-| cfs validate | Workspace/cross-artifact validation if applicable |  |  |  |
+| cfs validate | Workspace/cross-artifact validation status |  |  |  |
 
 Add one row for every supported validation command you ran. If a command is unsupported, mark it `N/A` here and explain it again in `Unsupported Commands / N/A Rationale`.
 
@@ -2186,28 +2186,20 @@ Checkpoint:
 
 After Module 6, the core operator path is complete.
 
-Go directly to the Capstone unless one of these applies:
+Do not jump straight to the Capstone. The next modules turn the completed Todo slice into operational evidence: brownfield re-entry, workspace boundary awareness, teammate explanation, authoring extension, and governance. They are part of the required course path.
 
-- your repo is brownfield and you still need the Module 7 retrofit evidence;
-- your docs and code live in multiple repos and you still need the Module 7 workspace evidence;
-- you need the Module 8 explain/onboarding output for a real handoff;
-- you intentionally want the Module 9 author/extension bridge;
-- you need the Module 10 governance or team-adoption material.
-
-If none apply, jump to Module 11 and keep the rest as reference modules.
-
-## Module 7. Brownfield And Workspace Scenarios
+## Module 7. Brownfield And Workspace Evidence
 
 ### Lesson 7.1. Brownfield Retrofit
 
-Use this lesson if your Todo app already existed before the course or if conventions are unclear.
+Treat the completed Todo app as if another teammate handed it to you tomorrow. The goal is not to rebuild it; the goal is to prove you can re-enter an existing Constructor Studio project safely, detect conventions, and avoid blind reinitialization.
 
 Start with the brownfield gate, not with blind reinitialization.
 
-- If `.cf-studio/` and the host integrations you need already exist, skip `cfs init` and `cfs generate-agents`.
-- Activate Constructor Studio, then run `cf auto-config` unless you already verified in this same session that the inferred rules and integrations are current.
-- Run `cfs init` only if `.cf-studio/` is missing or broken.
-- Run `cfs generate-agents --agent claude` or `cfs generate-agents --agent openai` only when the relevant host files are missing or stale.
+- Verify `.cf-studio/` exists and the host integrations you need are current.
+- Do not rerun `cfs init` on a healthy initialized repo.
+- Do not regenerate agents unless the relevant host files are missing or stale.
+- Use `cf auto-config` to inspect and refresh inferred repo-local rules only when the current session has not already verified them.
 
 In chat, activate Constructor Studio first:
 
@@ -2216,11 +2208,11 @@ Claude Code activation command: /cf
 Codex activation command: $cf
 ```
 
-In a brownfield repo, auto-config is the default next step after activation unless you already verified current inferred rules in this session.
+For the course drill, treat the current Todo repo as brownfield even though you created it earlier in the course. That forces you to practice re-entry discipline.
 
 Before any product edit, inspect what was inferred and turn it into a safe brownfield plan:
 
-If the inferred rules are wrong, run one bounded generate pass to fix only the repo-local rule source before product edits.
+If the inferred rules are wrong, run one bounded generate pass to fix only the repo-local rule source before any future product edits.
 
 Claude Code prompt:
 
@@ -2231,7 +2223,7 @@ Claude Code prompt:
 
 /cf analyze: summarize current Todo app conventions, architecture boundaries, test conventions, and risky areas. Do not modify files.
 
-/cf plan: create a safe brownfield phase plan for bringing this Todo repo under Constructor Studio control before feature edits.
+/cf plan: create a safe brownfield re-entry plan for this already-initialized Todo repo before any future feature edits.
 Constraints:
 - phase 1 is inspection and convention alignment only;
 - validate after each phase;
@@ -2247,7 +2239,7 @@ $cf analyze: review the inferred project rules and call out anything that does n
 
 $cf analyze: summarize current Todo app conventions, architecture boundaries, test conventions, and risky areas. Do not modify files.
 
-$cf plan: create a safe brownfield phase plan for bringing this Todo repo under Constructor Studio control before feature edits.
+$cf plan: create a safe brownfield re-entry plan for this already-initialized Todo repo before any future feature edits.
 Constraints:
 - phase 1 is inspection and convention alignment only;
 - validate after each phase;
@@ -2259,24 +2251,25 @@ Expected result:
 - A convention summary.
 - A short list of inferred-rule fixes or confirmations.
 - A risk list.
-- A brownfield phase plan before edits.
+- A brownfield re-entry plan before future edits.
 
 Checkpoint:
 
-- `docs/course-notes.md` records the current conventions, the brownfield plan path or fallback note, and the first safe brownfield phase.
+- `docs/course-notes.md` records the current conventions, the brownfield re-entry plan path or fallback note, and the first safe brownfield phase.
 
 ### Lesson 7.2. Multi-Repo Workspace
 
-Use this lesson when docs and app code live in separate repos.
+Run a workspace boundary check even when the course repo is currently single-repo. The goal is to prove whether your evidence is local-only or workspace-aware, not to pretend you have multiple repos.
 
-Expected workspace root:
+Workspace model:
 
-- A parent directory such as `~/todo-workspace/` that contains the orchestration repo plus sibling repos like `todo-docs/` and `todo-app/`.
+- In the normal course repo, docs and code live together. Record that validation is local-repo evidence unless you configure an explicit workspace.
+- In a split repo, use a parent directory such as `~/todo-workspace/` that contains the orchestration repo plus sibling repos like `todo-docs/` and `todo-app/`.
 - Run workspace commands from the orchestration repo root that owns the workspace config.
 - If you need to scan a broader parent directory while keeping the workspace config in the orchestration repo, stay in that orchestration repo root and pass both `--root` and `--output .cf-workspace.toml`.
 - Current CLI/code uses `.cf-workspace.toml` as the canonical standalone filename. Some older Studio workflow docs still mention `.studio-workspace.toml`; treat that as a legacy alias only, and do not keep both files in the same repo.
 
-Example terminal flow:
+Workspace terminal flow when you intentionally configure split-repo evidence:
 
 ```bash
 cfs workspace-init --root ~/todo-workspace/ --output .cf-workspace.toml
@@ -2288,7 +2281,7 @@ cfs workspace-sync
 cfs validate
 ```
 
-Useful inspection commands:
+Required inspection commands for the course:
 
 ```bash
 cfs where-defined --id cpt-todo-feature-todo-crud
@@ -2301,7 +2294,7 @@ cfs map --local-only
 cfs map
 ```
 
-Use `--source` when you need to validate one registered workspace source by name. `--local-only` controls whether validation stays local; `--source` controls which source is targeted. They are independent and can be combined.
+Use `--source` when a workspace source named `docs` exists. If it does not exist, record that source-targeted validation is not available in this run and keep the `validate --local-only` versus `validate` comparison as your required evidence. `--local-only` controls whether validation stays local; `--source` controls which source is targeted. They are independent and can be combined.
 
 Claude Code prompt:
 
@@ -2771,8 +2764,8 @@ Your final package must include:
 - remaining risks;
 - gate and approval decisions;
 - `docs/review-handoff.md`;
-- Module 7 brownfield/workspace evidence when applicable;
-- optional M9 extension note.
+- Module 7 brownfield/workspace evidence;
+- Module 9 extension/governance note.
 
 ### Capstone Steps
 
@@ -2985,10 +2978,10 @@ Update only the relevant FEATURE checkboxes/status after implementation and vali
 
 Replace the sample paths and commands with the exact preflight output before sending the real prompt.
 
-6. If Module 7 applies, finish that evidence before the final validation pass.
+6. Finish Module 7 evidence before the final validation pass.
 
-- If the Todo codebase already existed before this course, document the brownfield mapping: what already existed, what changed, and what stayed untouched.
-- If docs and code live in separate repos, capture workspace evidence such as `cfs workspace-info`, one cross-repo lookup, and whether `cfs validate` succeeded or had to fall back to `--local-only`.
+- Document the brownfield re-entry mapping: current conventions, what changed during the course, and what must stay untouched in future edits.
+- Capture workspace boundary evidence: `cfs workspace-info` when configured, one traceability lookup, and whether `cfs validate` is local-only or workspace-aware in this repo.
 
 7. Validate.
 
@@ -3161,7 +3154,7 @@ $cf analyze: review one proposed project-local Todo rule or prompt improvement. 
 | Validation discipline | Exact commands and outcomes are recorded per command, and the relevant commands were rerun after the last blocker fix. |
 | Traceability discipline | Required `@cpt-*` markers are present or explicitly justified as not applicable, and marker/reference validation was run where available. |
 | Review loop | Final post-fix semantic review findings exist, every blocker is fixed and revalidated, and only non-blocking findings are deferred with rationale. Any unfixed blocker means the capstone is incomplete or not passing. |
-| M7 conditional evidence | Brownfield/workspace evidence is included whenever the repo started pre-existing or spans multiple repos. |
+| M7 evidence | Brownfield re-entry and workspace boundary evidence are included. |
 | Unsupported command handling | Every unsupported validation command is marked `N/A` with a reason in `docs/review-handoff.md`. |
 | Dual-tool realism | Host differences are stated without claiming Claude/Codex parity. |
 | Human approval | The reviewer role or person, requested decision, and open risks are plainly recorded. |
@@ -3188,8 +3181,8 @@ Submit:
 - submission status set to `passing`, `incomplete`, or `not passing` with a reason;
 - final review findings plus fixed/deferred status;
 - remaining risks and gate/approval decisions;
-- Module 7 evidence when the project is brownfield or multi-repo;
-- optional Module 9 governance note.
+- Module 7 brownfield re-entry and workspace boundary evidence;
+- Module 9 governance note.
 
 ### Assessor Checklist
 
@@ -3206,12 +3199,12 @@ Submit:
 
 Binary completion rule:
 
-- Complete only when every required package item exists and every conditional item is either present or explicitly justified as not applicable.
+- Complete only when every required package item exists and every evidence category has a concrete result, including local-only or workspace-aware status.
 - If any required evidence item is missing, stale, or hand-waved, the capstone is incomplete.
 
 ## Appendix A. Command Reference
 
-Use Appendix A while running the capstone, Appendix B when something goes wrong, and Appendix C when you need to explain whether a capability is core, optional, or reference-only.
+Use Appendix A while running the capstone, Appendix B when something goes wrong, and Appendix C when you need to explain where each capability fits in the course path.
 
 Required or common in most runs:
 
@@ -3259,7 +3252,7 @@ $cf analyze: review the Todo changes against the Todo FEATURE, DESIGN, DECOMPOSI
 $cf analyze: validate code for the Todo FEATURE
 ```
 
-Workspace-aware or conditional:
+Workspace-aware checks:
 
 ```bash
 cfs validate
@@ -3293,7 +3286,7 @@ cfs generate-agents --agent openai
 
 During `cfs init`, accept the SDLC kit prompt if it appears. Use `cfs kit install constructorfabric/studio-kit-sdlc` if the kit was declined, skipped, missing, or not offered. `cfs validate-kits .` is useful as a broad kit-template check; `cfs validate-kits --kit sdlc` is the course's explicit SDLC-kit proof.
 
-Workspace and conditional commands:
+Workspace boundary commands:
 
 ```bash
 cfs workspace-init --root ~/todo-workspace/ --output .cf-workspace.toml
