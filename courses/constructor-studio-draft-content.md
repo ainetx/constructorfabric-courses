@@ -773,6 +773,7 @@ You do not need the full internals on day one. You do need the operator rules th
 - If your input is very large, ask `cf-explore` to summarize or split it into smaller review units before you continue, and use `cf-plan` only when the work itself truly needs phased execution.
 - Write permissions, git behavior, and sub-agent behavior are controlled separately; do not assume that because one gate is open, all gates are open.
 - The `cf-coding`, `cf-write-docs`, and `cf-write-skills` workflows open with optional explore and brainstorm gates before authoring or reviewing; skip them (the default) when the task is already clear, or use them for unfamiliar or ambiguous work.
+- Keep context lean: when the next step does not need the current chat context, run `/clear` or open a new chat. Everything the course relies on lives on disk — the SDLC artifacts, `plan.toml` and phase files, the saved brainstorm, and `docs/course-notes.md` — so a fresh session loses nothing. After any reset, re-activate with `/cf` (and on Codex, re-send `disable autonomous mode`) before continuing, because activation is per session.
 
 Under-the-hood glossary:
 
@@ -780,7 +781,7 @@ Under-the-hood glossary:
 
 Mini-lab:
 
-1. In `docs/course-notes.md`, add a short table with three rows: `cf analyze`, `cf-plan`, `cf generate`.
+1. In `docs/course-notes.md`, add a short table with three rows: `cf-explore`, `cf-plan`, `cf-coding`.
 2. For each row, write one sentence for when it is the right route.
 3. Add one sentence explaining how `cf-coding` both finds and fixes through its review-fix loop.
 
@@ -927,6 +928,8 @@ If the host asks whether to continue into PRD generation immediately, answer:
 ```text
 stop after saving the brainstorm decisions; do not generate PRD yet
 ```
+
+Context reset (optional): the brainstorm decisions are saved on disk, and PRD authoring reads them from there. You can `/clear` or open a new chat before the artifact chain to keep context lean — then re-activate (`/cf`; on Codex also re-send `disable autonomous mode`).
 
 ### Lesson 3.2. Create The SDLC Artifact Chain
 
@@ -1243,6 +1246,8 @@ Checkpoint:
 - `docs/course-notes.md` records one blocker/non-blocker classification from artifact validation and the decision it caused.
 - The FEATURE artifact, not the brainstorm cache or wrap-up summary, is now the governing artifact for implementation.
 - If the kit generated different artifact paths, record those paths and use them consistently from here onward.
+
+Context reset (optional): the artifact chain is on disk and the plan reads the FEATURE from `.cf-studio/config/artifacts.toml`. You can `/clear` or start a new chat before planning — then re-activate (`/cf`; on Codex also re-send `disable autonomous mode`).
 
 ### Lesson 3.3. Create A Plan
 
@@ -1719,6 +1724,8 @@ Checkpoint:
 - Paste the exact command, pass/fail result, and a short output excerpt or raw log reference into `docs/course-notes.md`.
 
 ## Module 5. Implement The React UI Slice
+
+Context reset (optional): the backend slice is committed and the UI slice reads the FEATURE and plan from disk. A `/clear` or new chat here keeps context lean — re-activate (`/cf`; on Codex also re-send `disable autonomous mode`) first.
 
 ### Lesson 5.1. Define The UI Behavior
 
@@ -2648,6 +2655,8 @@ Checkpoint:
 - You can mention migration without turning it into the Todo capstone.
 
 ## Module 11. Capstone
+
+Context reset (optional): the capstone runs from the artifacts, plan, and code already on disk. Start it in a fresh chat to keep context lean — re-activate (`/cf`; on Codex also re-send `disable autonomous mode`) first.
 
 ### Capstone Goal
 
