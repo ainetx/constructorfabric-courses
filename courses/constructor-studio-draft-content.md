@@ -47,6 +47,7 @@ Canonical forms:
 - Codex prompt cards use the same names with the dollar prefix: `$cf`, `$cf-coding`, `$cf-write-docs`, `$cf-sdlc-doc-prd`, `$cf-sdlc-implement`.
 - Pick the specialized command for the job. The SDLC kit skills (`cf-sdlc-doc-prd`, `cf-sdlc-doc-adr`, `cf-sdlc-doc-design`, `cf-sdlc-decompose`, `cf-sdlc-doc-feature`, `cf-sdlc-implement`) author and review their own artifact, and core skills like `cf-coding` and `cf-write-docs` both write and review through a built-in review-fix loop.
 - For activation, Claude Code uses `/cf`; Codex uses `$cf`. The task text follows the command name (no colon needed), for example `/cf-auto-config` in Claude Code or `$cf-auto-config` in Codex.
+- Codex defaults to an autonomous mode that runs ahead and skips the interactive gates Constructor Studio relies on. Start every Codex session with `disable autonomous mode` (best practice; or set it as a system prompt) so sub-agent approval, git-commit mode, brainstorm offers, and per-write confirmations actually appear. See Lesson 2.3. Claude Code respects the gates by default.
 - SDLC and Cypilot migration skills appear in the skill list but are reference-only in this course.
 
 Starter `docs/course-notes.md` template:
@@ -520,6 +521,16 @@ Reasoning: medium
 ```
 
 Use the Codex model picker, session settings, or config surface available in your install before running `$cf`. The goal is GPT-5.4 with medium reasoning for the course path.
+
+Codex also defaults to an autonomous mode that can run ahead and skip the interactive gates Constructor Studio relies on — sub-agent approval, git-commit mode, brainstorm offers, and per-write confirmations. Turn it off once at the start of every Codex session, before `$cf`:
+
+```text
+disable autonomous mode
+```
+
+Keep this as your first Codex message each session, or set it as a system or config instruction so it always applies — disabling autonomy at session start is the best practice. With autonomy off, the gates appear exactly as this course describes and you approve every write.
+
+If you cannot disable autonomous mode, use the two-prompt fallback for each skill: send the bare load command first (for example `$cf-sdlc-doc-prd`), let the skill load and present its gates, then send the intent as a separate follow-up message. Claude Code does not need this; it respects the gates by default.
 
 3. Activate Constructor Studio.
 
