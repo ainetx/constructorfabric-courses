@@ -984,20 +984,21 @@ PRD authoring is the first write-capable workflow, so this is where the git-comm
 
 This is asked once per session. If you ran the Module 3 brainstorm, sub-agent dispatch was already approved there; if you skipped it, you are asked to approve sub-agents here instead (reply `1`).
 
-The generator may also offer a brainstorm panel before it collects inputs:
+Before it writes, the authoring skill (the SDLC doc skills run through `cf-write-docs`) opens two optional gates, each a numbered menu — first an explore gate, then a brainstorm gate:
 
 ```text
-Want a brainstorm panel before I collect inputs?
+Before writing or reviewing docs, brainstorm ambiguous decisions or framing options with cf-brainstorm — or skip? Skip is the default when the approach is already clear. Reply with a number.
+1 brainstorm
+2 skip
 ```
 
-This is normal. It means the authoring workflow is giving you a chance to pressure-test the artifact before writing it. For this course, use saved brainstorm sessions deliberately:
+Skip is the default. For this course you already ran a dedicated brainstorm in Module 3, so reply `2` (skip) at both gates here:
 
-- For PRD, prefer `save` because product requirements are the source evidence for the whole chain.
-- For ADR + DESIGN, prefer `save` if the architecture/design choices are still fuzzy; this gives you a second saved decision session focused on architecture and design.
-- For DECOMPOSITION or FEATURE, prefer `save` when the implementation order or acceptance boundaries are unclear.
-- Reply `no` only when the artifact input is already clear and you want the generator to go straight to collection and writing.
+```text
+2
+```
 
-Several short saved brainstorm sessions are better than one huge vague session: PRD brainstorm for product scope, ADR + DESIGN brainstorm for technical decisions, and FEATURE brainstorm for implementation boundaries.
+Reply `1` (brainstorm) only to refine a genuinely ambiguous artifact — that launches `cf-brainstorm` with the offer from Lesson 3.1 (`yes` / `no` / `save`); prefer `save` so the decisions persist. Brainstorm separately per layer only when it helps: ADR + DESIGN when the architecture/design choices are still fuzzy, DECOMPOSITION or FEATURE when implementation order or acceptance boundaries are unclear.
 
 After writing, the skill runs its own review-fix loop — it does not ask how many iterations to run. It runs the deterministic gate (tests, lint, typecheck, build where applicable), then a semantic review, and asks you to approve fixes one finding at a time. Each approved fix is applied, the deterministic gate re-runs, and the review repeats; the loop stops and reports any remaining findings when no fix is applied (nothing approved or nothing applicable). You stay in control through the per-finding approval gate, not an iteration count.
 
@@ -1282,6 +1283,8 @@ Keep phases small. Include validation and review evidence.
 Do not implement yet.
 ```
 
+When `cf-plan` starts it first opens an explore/brainstorm gate (`Before assessing scope, explore project resources or brainstorm decisions — or skip straight to assessment? Reply with a number.`, options `1 explore` / `2 brainstorm` / `3 skip`). The FEATURE already defines the work, so reply `3` (skip).
+
 Expected result:
 
 - A plan directory under `.cf-studio/.plans/` when plan writes are available.
@@ -1290,20 +1293,20 @@ Expected result:
 - A next-phase execution prompt or equivalent "run this phase next" instruction.
 - The response explicitly reports the created plan path.
 
-If the plan workflow asks how completed plans should be handled, choose:
+If the plan workflow asks how completed plans should be handled (lifecycle: `gitignore` / `cleanup` / `archive` / `manual`), choose:
 
 ```text
-1
+gitignore
 ```
 
-This selects `gitignore`, so the generated plan files stay available locally while `.cf-studio/.plans/` remains out of version control. This is the recommended course path: the student can inspect `plan.toml`, briefs, and phase files throughout the course without committing temporary planning artifacts.
+This keeps the generated plan files available locally while `.cf-studio/.plans/` remains out of version control. This is the recommended course path: the student can inspect `plan.toml`, briefs, and phase files throughout the course without committing temporary planning artifacts.
 
 Before confirming plan file writes, read the decomposition preview. If it proposes output paths like `backend/src/...` or `frontend/src/...`, do not answer `y` yet. Correct the plan in chat and require the repo shape from this lesson: `src/server/`, `tests/`, and `ui/src/`.
 
-After the manifest and briefs are written, the plan workflow may ask how to produce compiled phase files:
+After the manifest and briefs are written, the plan workflow asks how to produce the compiled phase files:
 
 ```text
-The manifest and briefs are ready on disk. Choose how to produce the phase files.
+Brief package prepared (plan.toml + N briefs, 0/N phase files) — choose how to produce phase files: 1 inline (uses this chat's budget); 2 prompts (skips validation); 3 subagents (needs sub-agent approval); 4 stop (keep briefs). Reply with a number.
 ```
 
 For this course, choose:
