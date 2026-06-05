@@ -999,19 +999,7 @@ This is normal. It means the authoring workflow is giving you a chance to pressu
 
 Several short saved brainstorm sessions are better than one huge vague session: PRD brainstorm for product scope, ADR + DESIGN brainstorm for technical decisions, and FEATURE brainstorm for implementation boundaries.
 
-After writing, the generator may offer an automatic review loop:
-
-```text
-How many automatic review iterations should run before I check in with you?
-```
-
-For this course, use the default:
-
-```text
-5
-```
-
-Pressing Enter is equivalent when the prompt says the default is 5. Use `0` only when you intentionally want to skip automatic validation/review, and use a smaller number only when the host is in inline fallback mode or context is already tight.
+After writing, the skill runs its own review-fix loop — it does not ask how many iterations to run. It runs the deterministic gate (tests, lint, typecheck, build where applicable), then a semantic review, and asks you to approve fixes one finding at a time. Each approved fix is applied, the deterministic gate re-runs, and the review repeats; the loop stops and reports any remaining findings when no fix is applied (nothing approved or nothing applicable). You stay in control through the per-finding approval gate, not an iteration count.
 
 PRD.
 
