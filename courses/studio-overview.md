@@ -152,7 +152,7 @@ By the end of the lesson, product managers should understand how to use Construc
 - Use `cf-brainstorm` to explore options before locking scope.
 - Use `cf-write-docs` for general drafting, refinement, and review of human-facing content.
 - Use `cf-sdlc-doc-prd` to create and revise PRDs in the SDLC flow.
-- Use `cf-explain` and `cf-analyze` to make dense product content easier for other teams to consume and review.
+- Use `cf-explain` and `cf-sdlc-doc-prd` to make dense product content easier for other teams to consume, review, and validate.
 - Keep requirements visible as files instead of buried in chat history.
 
 ### Narrator Script and Visual Direction
@@ -184,7 +184,7 @@ By the end of the lesson, architects should understand how to gather context, ex
 
 - Use `cf-brainstorm` to examine architecture options and tradeoffs before deciding.
 - Use `cf-explore` to gather codebase and document context before writing or changing design.
-- Use `cf-explain` and `cf-analyze` to inspect PRDs, DESIGNs, and codebase structure.
+- Use `cf-explain`, `cf-sdlc-doc-design`, and `cf-sdlc-change-impact-analysis` to inspect PRDs, DESIGNs, and codebase structure.
 - Use `cf-sdlc-doc-design` and `cf-sdlc-doc-adr` to author or revise formal DESIGN and ADR artifacts.
 - Use `cf-sdlc-reverse-engineer` and `cf-sdlc-change-impact-analysis` as adoption hooks for existing systems, not as the default first-run path.
 
@@ -215,10 +215,10 @@ By the end of the lesson, developers and leads should understand how to analyze 
 
 ### Role-Specific Proof Points and Examples
 
-- Review DESIGN and FEATURE inputs with `cf-analyze` before implementation instead of coding from memory.
+- Review DESIGN and FEATURE inputs with `cf-explain` and `cf-sdlc-implement` before implementation instead of coding from memory.
 - Use `cf-sdlc-implement` to implement from approved FEATURE inputs with traceable links when configured.
 - Use `cf-coding` to write focused code changes, unit tests, and supporting implementation work.
-- Use `cf-explore` and `cf-analyze` for unfamiliar code or bug-fix work.
+- Use `cf-explore` and `cf-coding` for unfamiliar code or bug-fix work.
 - Use repeatable checks through `cfs` before asking for review.
 - Future progress tracking is relevant for leads and coordinators, but should be framed as direction, not as a fully described current feature set.
 
@@ -230,7 +230,7 @@ By the end of the lesson, developers and leads should understand how to analyze 
 | 0:35-1:15 | A strong engineering habit is to start from approved inputs. Review the PRD, DESIGN, or FEATURE that defines the change. Then implement from that artifact instead of from a vague chat summary. | Show code editor opening beside a FEATURE file with linked references. | Code from approved inputs |
 | 1:15-1:55 | During implementation, Constructor Studio helps bound the task. The workflow can separate exploration, planning, authoring, review, and validation so one long thread does not mix every job together. | Animate a large task being divided into clear stages. | Split the work |
 | 1:55-2:35 | This also helps when writing unit tests. Tests become part of the same evidence chain, not an afterthought. Developers can implement behavior and the supporting tests from the same feature-level intent. | Show code and tests appearing in parallel from one feature artifact. | Tests follow the feature |
-| 2:35-3:15 | For bug fixing or brownfield work, `cf-explore` and `cf-analyze` matter. They help developers inspect unfamiliar areas, explain existing logic, and reduce random edits in code they do not yet understand. | Show a bug report linking to targeted code exploration before editing begins. | Explore before fixing |
+| 2:35-3:15 | For bug fixing or brownfield work, `cf-explore` and `cf-coding` matter. They help developers inspect unfamiliar areas, explain existing logic, and reduce random edits in code they do not yet understand. | Show a bug report linking to targeted code exploration before editing begins. | Explore before fixing |
 | 3:15-3:55 | Before review, `cfs` provides repeatable checks for the configured project surface. That can include structure, references, and traceability markers where the team has enabled them. It is a repeatable quality signal, not a final approval. | Show terminal checks running, then a reviewer entering after the checks pass. | Repeatable checks first |
 | 3:55-4:30 | For dev leads, the team value is consistency. More work follows the same chain, evidence is easier to inspect, and future progress tracking can become more visible for coordination as the platform evolves. | Show multiple feature branches converging into one visible team board. | Better team visibility |
 | 4:30-5:00 | The developer takeaway is simple: Constructor Studio helps turn AI-assisted coding into a more bounded, test-aware, review-ready engineering workflow. | End on implementation, tests, validation, and review in one lane. | Bounded and review-ready |
@@ -249,7 +249,7 @@ By the end of the lesson, QA engineers should understand how Constructor Studio 
 
 ### Role-Specific Proof Points and Examples
 
-- Use `cf-explore` and `cf-analyze` to understand codebase and artifact context before creating tests.
+- Use `cf-explore` and `cf-explain` to understand codebase and artifact context before creating tests.
 - Use `cf-coding` to write automated tests against clearer behavior definitions and requirement links.
 - Validate evidence and traceability instead of relying only on verbal handoff.
 - Use repeatable checks as an input into QA review, not as a replacement for test judgment.
@@ -261,7 +261,7 @@ By the end of the lesson, QA engineers should understand how Constructor Studio 
 |---|---|---|---|
 | 0:00-0:35 | For QA engineers, Constructor Studio improves visibility. Instead of receiving only a code diff and a short summary, QA can inspect the requirement, design, feature intent, and validation evidence around the change. | Show a diff view expanding into linked artifacts and checks. | More than a diff |
 | 0:35-1:15 | That matters for test design. When expected behavior is clearer, automated tests can target the real intent of the change, not only the shape of the implementation. | Animate a test matrix generated from visible feature behavior. | Test against intent |
-| 1:15-1:55 | QA can also use `cf-explore` and `cf-analyze` to understand the codebase before writing or extending tests. This is especially useful in brownfield systems where behavior is spread across older modules. | Show test authoring starting from codebase exploration rather than guesswork. | Understand before testing |
+| 1:15-1:55 | QA can also use `cf-explore` and `cf-explain` to understand the codebase before writing or extending tests. This is especially useful in brownfield systems where behavior is spread across older modules. | Show test authoring starting from codebase exploration rather than guesswork. | Understand before testing |
 | 1:55-2:35 | Repeatable checks add another useful signal. If references, structure, or configured traceability fail, QA sees that early. But even a clean validation result does not replace real test thinking or release judgment. | Show a validator failure surfacing before a manual QA review board. | Checks inform QA |
 | 2:35-3:15 | Traceability is especially useful when the team enables it deeply. A QA engineer can follow a requirement into a feature, then into implementation markers and tests, which makes coverage conversations more concrete. | Animate a clickable chain from requirement to feature to code to test. | Follow the evidence chain |
 | 3:15-4:00 | Constructor Studio also supports team collaboration. PM intent, architecture decisions, engineering implementation, and QA validation can all stay in one reviewable flow instead of separate tools and meeting notes. | Show all roles contributing to one shared release packet. | QA inside team flow |
