@@ -8,17 +8,17 @@
 
 In this course you will use Constructor Studio to build and review a small Todo app. The core path uses one canonical architecture: a TypeScript HTTP API backend plus a React client. By the end, you will have a review-ready project package with:
 
-- the SDLC kit installed and validated;
-- a short Todo intent, refined through `cf brainstorm:` into an input brief;
-- SDLC artifacts: `PRD`, `ADR`, `DESIGN`, `DECOMPOSITION`, and `FEATURE`;
-- `docs/course-notes.md` with checkpoint evidence;
+- the SDLC (Software Development Lifecycle) kit installed and validated;
+- a short Todo intent refined through `cf-brainstorm` into an input brief;
+- SDLC artifacts (`PRD`, `ADR`, `DESIGN`, `DECOMPOSITION`, and `FEATURE`);
+- checkpoint evidence in `docs/course-notes.md`;
 - a TypeScript HTTP API backend slice;
-- a React UI slice that calls that backend;
-- code traceability markers that link implementation back to FEATURE IDs when the kit enables traceability;
+- a React UI slice connected to that backend;
+- code traceability markers linking implementation to FEATURE IDs when the kit enables traceability;
 - validation output;
 - behavior proof for list, create, toggle, and delete;
 - review findings and fixes;
-- a final handoff package that explains what changed, what evidence exists, and what still needs human approval.
+- a final handoff package explaining what changed, what evidence exists, and what still needs human approval.
 
 This course is operator-first. You are learning the day-one workflow for using Constructor Studio on a Todo project safely and repeatably. It assumes basic repo, Git, and terminal familiarity. Custom authoring, extension work, and deeper host tailoring come later, after you can operate the standard workflows with confidence.
 
@@ -43,12 +43,12 @@ Canonical forms:
 - Terminal commands use `cfs`.
 - Prompt cards are copy-paste ready. When a course step has a chat prompt, it should show a Claude Code block and a Codex block.
 - The workflow intent is usually identical in both hosts, but the copy-paste command prefix is not.
-- Claude Code prompt cards start with `/cf`, for example `/cf analyze: ...`.
-- Codex prompt cards start with `$cf`, for example `$cf analyze: ...`.
-- Do not paste bare `cf analyze:` or `cf generate:` into the course hosts unless your local host explicitly documents that alias.
-- For activation, Claude Code uses the slash command `/cf`; Codex uses the dollar command `$cf`.
-- Control-plane or admin prompts that intentionally do not use a colon still use the host prefix in prompt cards, for example `/cf auto-config` in Claude Code and `$cf auto-config` in Codex. SDLC migration is reference-only in this course; use the current host-specific form documented by your installed version before running it.
-- Slash commands are optional host aliases only. Do not rely on them for the course.
+- Claude Code prompt cards start with `/cf` (activation) or a specific skill name, for example `/cf-coding`, `/cf-write-docs`, `/cf-sdlc-doc-prd`, or `/cf-sdlc-implement`.
+- Codex prompt cards use the same names with the dollar prefix: `$cf`, `$cf-coding`, `$cf-write-docs`, `$cf-sdlc-doc-prd`, `$cf-sdlc-implement`.
+- Pick the specialized command for the job. The SDLC kit skills (`cf-sdlc-doc-prd`, `cf-sdlc-doc-adr`, `cf-sdlc-doc-design`, `cf-sdlc-decompose`, `cf-sdlc-doc-feature`, `cf-sdlc-implement`) author and review their own artifact, and core skills like `cf-coding` and `cf-write-docs` both write and review through a built-in review-fix loop.
+- For activation, Claude Code uses `/cf`; Codex uses `$cf`. The task text follows the command name (no colon needed), for example `/cf-auto-config` in Claude Code or `$cf-auto-config` in Codex.
+- Codex defaults to an autonomous mode that runs ahead and skips the interactive gates Constructor Studio relies on. Start every Codex session with `disable autonomous mode` (best practice; or set it as a system prompt) so sub-agent approval, git-commit mode, brainstorm offers, and per-write confirmations actually appear. See Lesson 2.3. Claude Code respects the gates by default.
+- SDLC and Cypilot migration skills appear in the skill list but are reference-only in this course.
 
 Starter `docs/course-notes.md` template:
 
@@ -182,7 +182,7 @@ Checkpoint:
 - `git status --short` works.
 - You have not opened Claude Code or Codex for course prompts yet.
 
-First verify or repair prerequisites.
+Verify your prerequisites before continuing:
 
 ```bash
 python3 --version
@@ -342,7 +342,7 @@ The long list is normal. It is a preview of generated Claude skills and agents. 
 After you confirm, a successful run ends with a summary like this:
 
 ```text
-14 skill file(s), 40 subagent file(s)
+27 skill file(s), 42 subagent file(s)
 
 Agent integration complete!
 
@@ -382,7 +382,7 @@ The long list is normal here too. For Codex, skills are generated under `.agents
 After you confirm, a successful OpenAI/Codex run also ends with a summary like this:
 
 ```text
-14 skill file(s), 40 subagent file(s)
+27 skill file(s), 42 subagent file(s)
 
 Agent integration complete!
 
@@ -469,68 +469,11 @@ Checkpoint:
 - `docs/course-notes.md` records that you accepted or installed the SDLC kit and includes the `cfs info` registration evidence plus the `cfs validate-kits --kit sdlc` result.
 - `docs/course-notes.md` names the generated host surfaces that match your chosen host.
 
-### Lesson 2.2. Bootstrap The Course App Shell
+### Lesson 2.2. Make The Initial Commit
 
-Bootstrap the canonical scratch architecture before Module 3.
+Create the initial Git commit before any brainstorm or sub-agent workflow. This module is design-first, so there is nothing to build by hand. The application itself is created later, when the agent implements the FEATURE in Module 4.
 
-Scratch-repo bootstrap for the core path:
-
-1. Check the runtime you will use for this course path:
-
-```bash
-node --version
-npm --version
-```
-
-2. Use `npm` as the canonical package manager for the empty-repo path unless the repo or assessor explicitly requires another manager.
-
-3. Add repository hygiene before installing dependencies:
-
-```bash
-printf "node_modules/\\nui/node_modules/\\ndist/\\nui/dist/\\ncoverage/\\n.env\\n.DS_Store\\n" > .gitignore
-```
-
-This prevents the root `node_modules/` and generated UI dependencies from becoming untracked commit noise. If you already installed dependencies before this step, add `.gitignore` now and confirm `git status --short` no longer lists `node_modules/`.
-
-4. Bootstrap the minimal package and UI shell from the repo root:
-
-```bash
-npm init -y
-npm install express cors
-npm install -D typescript tsx vitest @types/express @types/node
-npm create vite@5.5.5 ui -- --template react-ts
-npm install --prefix ui
-```
-
-Expected terminal notes:
-
-- `npm init -y` creates a plain `package.json`; the default `test` script is temporary and will be replaced by `npm pkg set scripts.test="vitest run"`.
-- `npm create vite@5.5.5 ui -- --template react-ts` may ask `Need to install the following packages: create-vite@5.5.5. Ok to proceed?`; answer `y`.
-- Vite may print `Done. Now run: cd ui; npm install; npm run dev`; stay in the repo root and use `npm install --prefix ui` as shown above.
-- `npm install --prefix ui` may report moderate audit warnings from the generated Vite dependency tree. Record them in `docs/course-notes.md`, but do not run `npm audit fix --force` during the course setup unless a human maintainer explicitly approves the dependency changes.
-- If `git status --short` shows `node_modules/`, stop and fix `.gitignore` before continuing. This is setup hygiene, not product work.
-
-5. Create the empty backend and evidence directories. This is environment setup only; do not implement Todo behavior before the SDLC artifact chain exists:
-
-```bash
-mkdir -p docs src/server tests
-```
-
-6. Add only the package scripts needed to run later course slices:
-
-```bash
-npm pkg set scripts.dev:api='echo "dev:api deferred until Module 4"'
-npm pkg set scripts.dev:ui="npm run dev --prefix ui"
-npm pkg set scripts.test="vitest run"
-npm pkg set scripts.typecheck="tsc --noEmit && npm run typecheck --prefix ui"
-npm pkg set scripts.build="tsc --noEmit && npm run build --prefix ui"
-```
-
-If you already set `dev:api` to `tsx src/server/bootstrap.ts` and `npm run dev:api` fails with `ERR_MODULE_NOT_FOUND`, replace it with the deferred script above. Module 2 does not create `src/server/bootstrap.ts`; the real API entrypoint is created later from the FEATURE artifact.
-
-7. Create the initial Git commit before any brainstorm or sub-agent workflow.
-
-Native sub-agent dispatch needs a valid Git `HEAD`. A freshly initialized repo with no commits can pass `git status`, but still fail sub-agent dispatch because `git rev-parse HEAD` has nothing to resolve.
+Native sub-agent dispatch needs a valid Git `HEAD`: a freshly initialized repo with no commits can pass `git status`, but still fail sub-agent dispatch because `git rev-parse HEAD` has nothing to resolve. This commit captures the initialized Studio workspace only.
 
 Check for `HEAD`:
 
@@ -549,7 +492,7 @@ git rev-parse --short HEAD
 
 Expected result:
 
-- The first commit may be large. Seeing hundreds of files is normal because `.cf-studio/`, SDLC kit resources, generated Claude/Codex host integrations, package locks, and the Vite scaffold are all part of the initialized course workspace.
+- The first commit may be large. Seeing many files is normal because `.cf-studio/`, SDLC kit resources, and the generated Claude/Codex host integrations are all part of the initialized course workspace.
 - The important success signal is that `git rev-parse --short HEAD` prints a short commit hash such as `b4a1e9e`.
 - Record that hash in `docs/course-notes.md` under setup evidence.
 
@@ -568,7 +511,7 @@ Claude Code:
 /effort medium
 ```
 
-Prefer regular Sonnet without a `[1m]` suffix for this course. In Claude Code, type `/model Sonnet` directly; opening `/model` without an argument may show a picker that keeps or selects `Sonnet (1M context)`. If you accidentally land on 1M context, type `/model Sonnet` again, then verify the status line says `Sonnet with medium effort` rather than `Sonnet (1M context)`. If Claude Code still will not let you remove 1M context, do not block the course: keep Sonnet with medium effort, record `Claude context: 1M could not be disabled` in `docs/course-notes.md`, and continue.
+Prefer regular Sonnet without a `[1m]` suffix for this course. In Claude Code, type `/model Sonnet` directly; opening `/model` without an argument may show a picker that keeps or selects `Sonnet (1M context)`. If you accidentally land on 1M context, type `/model Sonnet` again, then verify the status line says `Sonnet with medium effort` rather than `Sonnet (1M context)`. If Claude Code still will not let you remove 1M context, do not block the course. Keep Sonnet with medium effort. Record `Claude context: 1M could not be disabled` in `docs/course-notes.md`, then continue.
 
 Codex:
 
@@ -578,6 +521,16 @@ Reasoning: medium
 ```
 
 Use the Codex model picker, session settings, or config surface available in your install before running `$cf`. The goal is GPT-5.4 with medium reasoning for the course path.
+
+Codex also defaults to an autonomous mode that can run ahead and skip the interactive gates Constructor Studio relies on — sub-agent approval, git-commit mode, brainstorm offers, and per-write confirmations. Turn it off once at the start of every Codex session, before `$cf`:
+
+```text
+disable autonomous mode
+```
+
+Keep this as your first Codex message each session, or set it as a system or config instruction so it always applies — disabling autonomy at session start is the best practice. With autonomy off, the gates appear exactly as this course describes and you approve every write.
+
+If you cannot disable autonomous mode, use the two-prompt fallback for each skill: send the bare load command first (for example `$cf-sdlc-doc-prd`), let the skill load and present its gates, then send the intent as a separate follow-up message. Claude Code does not need this; it respects the gates by default.
 
 3. Activate Constructor Studio.
 
@@ -598,41 +551,94 @@ Expected result after activation:
 - You get a clear activation confirmation or workflow-aware acknowledgement.
 - The host behaves like Constructor Studio is active for this repo, not like a generic assistant with no repo-aware workflow layer.
 
-Claude Code activation commonly looks like this when you type only `/cf` without naming a workflow:
+Claude Code activation commonly looks like this when you type only `/cf` without naming a workflow. Constructor Studio first loads its core rules and reports them, then asks you to pick a workflow skill:
 
 ```text
-No specific workflow was requested. Per AmbiguousRoutingFallback:
+Constructor Studio loaded (cf). Rule sources loaded: .cf-studio/.gen/AGENTS.md,
+.cf-studio/.gen/SKILL.md, .cf-studio/config/ (when present), the core PDSL
+execution card, and the cf SKILL units. cf is ready.
 
-I need more context to route this request. Which best describes what you need?
+No task intent in the prompt. Showing all available cf-* skills.
 
-#   Option
-1   plan — decompose / break down work into phases
-2   generate — create, edit, fix, implement, or refactor artifacts/code
-3   analyze — review, validate, audit, explain, or find bugs
-4   workspace — multi-repo, add source, cross-reference
-5   migrate — migrate from cypilot
+Pick a cf-* skill by number to run it.
 
-Reply with 1, 2, 3, 4, or 5.
+Core workflows:
+1. cf-analyze — analyze artifacts, code, or the codebase
+2. cf-auto-config — auto-configure the studio
+3. cf-brainstorm — run a brainstorm panel
+4. cf-coding — write, implement, or fix code
+5. cf-debug-prompts — debug prompt / skill issues
+6. cf-explain — explain, walk through, or narrate a topic or artifact
+7. cf-explore — explore, discover, or survey the project
+8. cf-generate — create, update, or regenerate artifacts
+9. cf-help — get help with Constructor Studio
+10. cf-map — build an interactive dependency map
+11. cf-plan — plan work before executing it
+12. cf-studio — session management (alias of cf)
+13. cf-workspace — set up or manage a multi-repo workspace
+14. cf-write-docs — write or revise documentation
+15. cf-write-skills — write or revise skills
+
+Kit: sdlc workflows:
+16. cf-sdlc-change-impact-analysis — analyze change impact across artifacts
+17. cf-sdlc-decompose — decompose a PRD/DESIGN into a DECOMPOSITION artifact
+18. cf-sdlc-doc-adr — author or revise an ADR
+19. cf-sdlc-doc-design — author or revise a DESIGN artifact
+20. cf-sdlc-doc-feature — author or revise a FEATURE artifact
+21. cf-sdlc-doc-prd — author or revise a PRD
+22. cf-sdlc-implement — implement a FEATURE as code
+23. cf-sdlc-migrate-openspec — migrate OpenSpec artifacts into the SDLC pipeline
+24. cf-sdlc-pr-review — review a pull request
+25. cf-sdlc-pr-status — get the status of a PR
+26. cf-sdlc-reverse-engineer — reverse-engineer existing code into SDLC artifacts
+
+27. none — stop
 ```
 
-This is a valid activation signal. It means Constructor Studio loaded and is asking which workflow to route into. For this lesson, do not choose a write-capable route yet; continue with the read-only `cf analyze:` check in Lesson 2.4.
+This is a valid activation signal. It means Constructor Studio loaded its core rules and is offering the available `cf-*` workflow skills. The agent shows the same load report and skill menu in both hosts; only the prefix you typed differs (`/cf` in Claude Code, `$cf` in Codex). Because you typed `/cf` with no task intent, the menu lists every available skill and pre-selects none; when your prompt does carry an intent, the matching skill is tagged `(suggested)`. After activation a write gate is held: the agent can inspect and route, but it cannot write files until a workflow releases the gate and you confirm each write. SDLC and Cypilot migration skills appear in the list but are reference-only in this course. For this lesson, do not pick a write-capable skill yet; continue with the read-only `cf-explore` check in Lesson 2.4.
 
-Codex activation commonly looks like this:
+Codex activation commonly looks like this (same load report and skill menu; you type `$cf` instead of `/cf`):
 
 ```text
-cf is active for this repo. The phase gate is armed, so I can inspect and route work,
-but I cannot write anything until the workflow releases the gate and you explicitly
-confirm the write.
+Constructor Studio loaded (cf). Rule sources loaded: .cf-studio/.gen/AGENTS.md,
+.cf-studio/.gen/SKILL.md, .cf-studio/config/ (when present), the core PDSL
+execution card, and the cf SKILL units. cf is ready.
 
-I need more context to route this request. Which best describes what you need?
+No task intent in the prompt. Showing all available cf-* skills.
 
-1. plan
-2. generate
-3. analyze
-4. workspace
-5. migrate
+Pick a cf-* skill by number to run it.
 
-Reply with 1, 2, 3, 4, or 5.
+Core workflows:
+1. cf-analyze — analyze artifacts, code, or the codebase
+2. cf-auto-config — auto-configure the studio
+3. cf-brainstorm — run a brainstorm panel
+4. cf-coding — write, implement, or fix code
+5. cf-debug-prompts — debug prompt / skill issues
+6. cf-explain — explain, walk through, or narrate a topic or artifact
+7. cf-explore — explore, discover, or survey the project
+8. cf-generate — create, update, or regenerate artifacts
+9. cf-help — get help with Constructor Studio
+10. cf-map — build an interactive dependency map
+11. cf-plan — plan work before executing it
+12. cf-studio — session management (alias of cf)
+13. cf-workspace — set up or manage a multi-repo workspace
+14. cf-write-docs — write or revise documentation
+15. cf-write-skills — write or revise skills
+
+Kit: sdlc workflows:
+16. cf-sdlc-change-impact-analysis — analyze change impact across artifacts
+17. cf-sdlc-decompose — decompose a PRD/DESIGN into a DECOMPOSITION artifact
+18. cf-sdlc-doc-adr — author or revise an ADR
+19. cf-sdlc-doc-design — author or revise a DESIGN artifact
+20. cf-sdlc-doc-feature — author or revise a FEATURE artifact
+21. cf-sdlc-doc-prd — author or revise a PRD
+22. cf-sdlc-implement — implement a FEATURE as code
+23. cf-sdlc-migrate-openspec — migrate OpenSpec artifacts into the SDLC pipeline
+24. cf-sdlc-pr-review — review a pull request
+25. cf-sdlc-pr-status — get the status of a PR
+26. cf-sdlc-reverse-engineer — reverse-engineer existing code into SDLC artifacts
+
+27. none — stop
 ```
 
 4. Confirm read-only routing before any setup prompt that can write.
@@ -640,42 +646,38 @@ Reply with 1, 2, 3, 4, or 5.
 Claude Code prompt:
 
 ```text
-/cf analyze: summarize the current repo structure and identify the safest next setup step. Do not modify files.
+/cf-explore summarize the current repo structure and identify the safest next setup step. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: summarize the current repo structure and identify the safest next setup step. Do not modify files.
+$cf-explore summarize the current repo structure and identify the safest next setup step. Do not modify files.
 ```
 
 Expected survey result:
 
 - It may report that `.cf-studio/` and the SDLC kit are ready.
-- It may report that `ui/` exists and `src/server/` is still empty.
-- It may report missing technical plumbing such as root `tsconfig.json` or a real backend entrypoint.
+- It may report that there is no application code yet; that is normal for a fresh course repo.
 - It may report that the artifact registry is empty and no PRD, ADR, DESIGN, DECOMPOSITION, or FEATURE exists yet.
-- It may report that `node_modules/` is untracked if `.gitignore` was missing or added too late.
-- It may report that the repo has no initial commit yet.
-- It may recommend one of several next steps: fix repository hygiene, brainstorm intent, write PRD/FEATURE, or create missing technical plumbing.
+- It may report whether the repo has an initial commit.
+- It may recommend one of several next steps: make the initial commit, brainstorm intent, or write PRD/FEATURE.
 
 Use this course policy to interpret the survey:
 
-- If the survey reports untracked `node_modules/`, fix `.gitignore` first. This is repository hygiene and should happen before any artifact or product work.
 - If the survey reports missing Git `HEAD`, create the initial setup commit before continuing.
-- If the survey recommends `cf brainstorm:` as the safest next step, accept that recommendation and continue to Module 3.
+- If the survey recommends `cf-brainstorm` as the safest next step, accept that recommendation and continue to Module 3.
 - If the survey recommends creating PRD or FEATURE immediately, treat that as a useful reminder that the artifact registry is empty, but do not skip the course path. Continue to Module 3 and run the brainstorm first so the first artifact is grounded in a human-approved Todo intent.
-- Missing `tsconfig.json`, a real backend entrypoint, or test files are not blockers for brainstorming or SDLC artifact creation; they only become blockers before backend/UI implementation and smoke validation.
 
-Do not fix technical gaps just because they exist; fix them when they block the next course step. Do not register codebase scan paths in Module 2: there are no course artifacts yet, so marker scanning is not actionable. The course handles traceability configuration later, after the Todo FEATURE exists and implementation is about to begin.
+Do not create technical plumbing just because it is absent; the agent creates it when implementation begins. Do not register codebase scan paths in Module 2: there are no course artifacts yet, so marker scanning is not actionable. The course handles traceability configuration later, after the Todo FEATURE exists and implementation is about to begin.
 
 5. Run a read-only readiness check for the next course stage.
 
 Claude Code prompt:
 
 ```text
-/cf analyze: verify that this repo is ready to continue to the Todo brainstorm and SDLC artifact chain.
-Check only setup readiness: .cf-studio initialization, sdlc kit installation, generated host integration, valid git HEAD, package scripts, docs/course-notes.md, empty src/server and tests directories, and Vite ui scaffold.
+/cf-explore verify that this repo is ready to continue to the Todo brainstorm and SDLC artifact chain.
+Check only setup readiness: .cf-studio initialization, sdlc kit installation, generated host integration, valid git HEAD, and docs/course-notes.md.
 Do not modify files.
 Return:
 - PASS if the repo is ready for brainstorm/artifact authoring
@@ -686,8 +688,8 @@ Return:
 Codex prompt:
 
 ```text
-$cf analyze: verify that this repo is ready to continue to the Todo brainstorm and SDLC artifact chain.
-Check only setup readiness: .cf-studio initialization, sdlc kit installation, generated host integration, valid git HEAD, package scripts, docs/course-notes.md, empty src/server and tests directories, and Vite ui scaffold.
+$cf-explore verify that this repo is ready to continue to the Todo brainstorm and SDLC artifact chain.
+Check only setup readiness: .cf-studio initialization, sdlc kit installation, generated host integration, valid git HEAD, and docs/course-notes.md.
 Do not modify files.
 Return:
 - PASS if the repo is ready for brainstorm/artifact authoring
@@ -697,109 +699,58 @@ Return:
 
 Expected readiness interpretation:
 
-- Empty `src/server/`, empty `tests/`, missing root `tsconfig.json`, and a deferred `dev:api` script are `DEFERRED` for Module 3. They matter before implementation and validation, not before brainstorm.
-- Missing `.gitignore` that allows `node_modules/` to appear in `git status --short` is a `SETUP BLOCKER`; fix hygiene before continuing.
 - Missing initial Git commit is a `SETUP BLOCKER`; native sub-agent dispatch can fail when `git rev-parse HEAD` has no valid commit.
 - Missing `.cf-studio/`, missing SDLC kit, or missing generated host integration is a `SETUP BLOCKER`.
-- A default Vite UI is acceptable. Do not replace it with Todo UI before the SDLC artifact chain exists.
 
 Healthy readiness output should look like this in substance:
 
 ```text
-PASS
+Setup Readiness Report — Module 3
 
-The repo is ready to continue to the Todo brainstorm and SDLC artifact chain.
+Check                       Result  Evidence
+--------------------------  ------  -------------------------------------------------
+.cf-studio initialization   PASS    .cf-studio/ + core.toml [[kits]] sdlc + artifacts.toml
+SDLC kit installation       PASS    kits/sdlc/ subdirs; all artifact kinds + workflows
+Generated host integration  PASS    .cf-studio/.gen/ with AGENTS.md + SKILL.md
+Git HEAD                    PASS    valid commit on current branch; no detached HEAD
+docs/course-notes.md        PASS    exists, writable; section headers present (body empty)
 
-SETUP BLOCKER
-- None.
-
-Setup evidence
-- git HEAD is valid.
-
-DEFERRED
-- root tsconfig.json is missing, or dev:api is still deferred until Module 4.
-  This matters once implementation starts, but it does not block Module 3.
-- The UI is still the stock Vite starter. That is fine for now.
+Overall: PASS — ready for the Todo brainstorm and SDLC artifact chain (Module 3).
+No SETUP BLOCKER. No DEFERRED items.
 ```
 
 If the host offers next options after the PASS, choose the brainstorm route. Do not choose direct PRD/FEATURE generation yet; the next course step is the human-guided Todo brainstorm.
 
-If the repo has no runnable UI test harness yet, record that as a TDD exception in `docs/course-notes.md`. Later UI steps may use a concrete smoke checklist instead of `npm test -- TodoList` until a UI test harness is intentionally added.
+6. Do not implement backend or UI product code in Module 2 yet. Greenfield SDLC work is design-first: implementation with `cf-sdlc-implement` starts only after PRD, ADR, DESIGN, DECOMPOSITION, and FEATURE exist, and that implementation also creates the project shell (`package.json`, `ui/`, `src/server/`, `.gitignore`, and the package scripts).
 
-6. Do not use `cf generate` to create backend or UI product code in Module 2. Greenfield SDLC work is design-first: code generation starts only after PRD, ADR, DESIGN, DECOMPOSITION, and FEATURE exist.
-
-7. Target this minimal structure:
+7. After setup, the repo holds just Constructor Studio and your notes:
 
 ```text
+.cf-studio/
 docs/
   course-notes.md
-src/
-  server/
-tests/
-ui/
-  src/
 ```
 
-Later backend and UI phases can add `index.ts`, `todoApi.ts`, `todoStore.ts`, `ui/src/App.tsx`, `ui/src/api.ts`, tests, or repo-local equivalents when FEATURE-driven implementation begins. Module 4 replaces the deferred `dev:api` script with the real API entrypoint after tests and behavior proof exist.
+Generated host-integration directories (such as `.claude/`, `.agents/`, `.codex/`) are also present. The agent creates `package.json`, `src/server/`, `tests/`, `ui/`, and the package scripts (`dev:api`, `dev:ui`, `test`, `typecheck`, `build`) when FEATURE-driven implementation begins in Module 4.
 
-8. Record the intended command contract for later implementation:
-
-```text
-dev:api      deferred until Module 4
-dev:ui       starts the Vite UI scaffold
-test         runs Vitest
-typecheck    deferred until root TypeScript config exists
-build        deferred until root TypeScript config and UI build are ready
-```
-
-Do not run the full implementation command set yet. Before Module 3, the important point is that setup, activation, and readiness checks passed. Deferred command gaps are resolved at the implementation gate in Module 4.
+8. There is no command contract to record yet. The package scripts are created by the agent during implementation in Module 4. Before Module 3, the important point is that setup, activation, and readiness checks passed; the app and its commands come later, from the FEATURE.
 
 ### Lesson 2.4. Activation Rubric
 
-Use this rubric for the activation you just performed, or repeat it if you opened a fresh chat.
+Use this rubric to grade the activation and read-only responses you already saw in Lesson 2.3 — the `/cf` load report and the `cf-explore` survey and readiness output. If you opened a fresh chat, re-run `/cf` and one read-only `cf-explore` prompt first, then apply the rubric.
 
-Claude Code activation command:
+A healthy activation:
 
-```text
-/cf
-```
+- gives a clear activation confirmation or workflow-aware acknowledgement, not a generic-assistant reply;
+- stays read-only on the survey and readiness prompts and writes no files;
+- references at least one real repo artifact or note (`docs/course-notes.md`, `.cf-studio/`, or `src/`);
+- names one bounded next step, or one tight clarification question.
 
-Codex activation command:
-
-```text
-$cf
-```
-
-Expected result after activation:
-
-- You get a clear activation confirmation or workflow-aware acknowledgement.
-- The host behaves like Constructor Studio is active for this repo, not like a generic assistant with no repo-aware workflow layer.
-
-Then run a harmless analysis prompt. Use `cf analyze` here because it is the read-only inspection workflow. It is the safest way to confirm activation before you ask for planning or generation.
-
-Claude Code prompt:
-
-```text
-/cf analyze: summarize the current repo structure and identify the safest first Todo app step. Do not modify files.
-```
-
-Codex prompt:
-
-```text
-$cf analyze: summarize the current repo structure and identify the safest first Todo app step. Do not modify files.
-```
-
-Expected result:
-
-- The response should explicitly stay read-only, reference at least one real repo artifact or note such as `docs/course-notes.md`, `.cf-studio/`, or `src/`, and name one bounded next step.
-- It should stay read-only and not write files.
-- It should identify the current repo state or one bounded next step.
-- It may name different "safest" next steps in different hosts. That is acceptable for this check: you are testing read-only routing and repo awareness, not delegating the course sequence.
+It may name different "safest" next steps in different hosts. That is acceptable here: you are testing read-only routing and repo awareness, not delegating the course sequence.
 
 Interpretation rule:
 
-- If the response flags untracked `node_modules/`, fix `.gitignore` before continuing.
-- If the response suggests writing PRD or FEATURE directly, record the suggestion, then still continue to the Module 3 brainstorm. The course's canonical sequence is: setup hygiene, read-only survey, brainstorm, then SDLC artifacts.
+- If the response suggests writing PRD or FEATURE directly, record the suggestion, then still continue to the Module 3 brainstorm. The course's canonical sequence is: setup, read-only survey, brainstorm, then SDLC artifacts.
 - If the response suggests backend code first, defer it until after the brainstorm and artifact chain.
 
 Short activation rubric:
@@ -816,12 +767,13 @@ Checkpoint:
 
 You do not need the full internals on day one. You do need the operator rules that prevent bad turns.
 
-- `ProtocolGuard` runs before normal workflow work and decides what can run safely in this repo.
-- Routing is first-match, so ask for one thing at a time and phrase the workflow clearly.
-- A request such as `find the bug and fix it` should start with `cf analyze:` so the findings exist before any fix pass.
-- If your input is very large, ask `cf analyze:` to summarize or split it into smaller review units before you continue, and use `cf plan:` only when the work itself truly needs phased execution.
+- The `cf` skill loads its core rules at session start (the load report) before any workflow work and gates what can run safely in this repo.
+- Intent routing offers the matching `cf-*` skill, so ask for one thing at a time and phrase the request clearly.
+- A request such as `find the bug and fix it` goes to `cf-coding`, which reviews first and then applies bounded fixes through its review-fix loop.
+- If your input is very large, ask `cf-explore` to summarize or split it into smaller review units before you continue, and use `cf-plan` only when the work itself truly needs phased execution.
 - Write permissions, git behavior, and sub-agent behavior are controlled separately; do not assume that because one gate is open, all gates are open.
-- `CF_BYPASS=on` is a deliberate audit state, not a casual phrase.
+- The `cf-coding`, `cf-write-docs`, and `cf-write-skills` workflows open with optional explore and brainstorm gates before authoring or reviewing; skip them (the default) when the task is already clear, or use them for unfamiliar or ambiguous work.
+- Keep context lean: when the next step does not need the current chat context, run `/clear` or open a new chat. Everything the course relies on lives on disk — the SDLC artifacts, `plan.toml` and phase files, the saved brainstorm, and `docs/course-notes.md` — so a fresh session loses nothing. After any reset, re-activate with `/cf` (and on Codex, re-send `disable autonomous mode`) before continuing, because activation is per session.
 
 Under-the-hood glossary:
 
@@ -829,9 +781,9 @@ Under-the-hood glossary:
 
 Mini-lab:
 
-1. In `docs/course-notes.md`, add a short table with three rows: `cf analyze`, `cf plan`, `cf generate`.
+1. In `docs/course-notes.md`, add a short table with three rows: `cf-explore`, `cf-plan`, `cf-coding`.
 2. For each row, write one sentence for when it is the right route.
-3. Add one sentence explaining why `find the bug and fix it` should start in `cf analyze:` instead of `cf generate:`.
+3. Add one sentence explaining how `cf-coding` both finds and fixes through its review-fix loop.
 
 ### Lesson 2.6. Optional Source-Truth Sanity Check
 
@@ -848,13 +800,13 @@ Suggested prompt.
 Claude Code prompt:
 
 ```text
-/cf analyze: compare the specific Constructor Studio command or routing wording I am about to use with the current repo-visible source truth for version 1.0.0. Return only the learner-safe phrasing I should use next and any explicit exclusions. Do not modify files.
+/cf-explore compare the specific Constructor Studio command or routing wording I am about to use with the current repo-visible source truth for version 1.0.0. Return only the learner-safe phrasing I should use next and any explicit exclusions. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: compare the specific Constructor Studio command or routing wording I am about to use with the current repo-visible source truth for version 1.0.0. Return only the learner-safe phrasing I should use next and any explicit exclusions. Do not modify files.
+$cf-explore compare the specific Constructor Studio command or routing wording I am about to use with the current repo-visible source truth for version 1.0.0. Return only the learner-safe phrasing I should use next and any explicit exclusions. Do not modify files.
 ```
 
 Formal source-truth reconciliation for teaching, reuse, or governance happens later in Module 10.3. During the core Todo path, record only the corrections that materially affect the current repo.
@@ -866,8 +818,8 @@ Formal source-truth reconciliation for teaching, reuse, or governance happens la
 Before you start artifact authoring, prove that your host preserves Constructor Studio routing:
 
 1. Activate Constructor Studio: `/cf` in Claude Code, or `$cf` in Codex.
-2. Run one read-only `cf analyze:` prompt and confirm it does not write files.
-3. Run the `cf brainstorm:` prompt in Lesson 3.1 and confirm it behaves as brainstorming, not generic implementation.
+2. Run one read-only `cf-explore` prompt and confirm it does not write files.
+3. Run the `cf-brainstorm` prompt in Lesson 3.1 and confirm it behaves as brainstorming, not generic implementation.
 4. Ask for a write-capable artifact prompt only after the host shows or respects an explicit write-confirmation boundary.
 
 If the host you chose does not preserve activation, read-only analysis, brainstorming, and write-confirmation boundaries, regenerate that host integration, reopen or reload the host, and rerun the gate. If it still fails, use another generated host that passes the gate before continuing.
@@ -878,18 +830,18 @@ Use this decision table.
 
 | Situation | Use |
 |---|---|
-| The idea is fuzzy | `cf brainstorm:` |
-| You need the SDLC artifact chain | SDLC kit prompts: `make PRD`, `make ADR`, `make DESIGN`, `decompose`, `make FEATURE` |
-| The task is multi-step, risky, or multi-file | `cf plan:` |
-| The scope is approved and bounded | `cf generate:` |
-| You need review, comparison, explanation, validation, or normal prompt/workflow/agent review | `cf analyze:` |
+| The idea is fuzzy | `cf-brainstorm` |
+| You need the SDLC artifact chain | `cf-sdlc-doc-prd`, `cf-sdlc-doc-adr`, `cf-sdlc-doc-design`, `cf-sdlc-decompose`, `cf-sdlc-doc-feature` |
+| The task is multi-step, risky, or multi-file | `cf-plan` |
+| The scope is approved and you are writing or changing code | `cf-coding` (or `cf-sdlc-implement` for FEATURE → code with `@cpt-*` traceability) |
+| You need review, validation, or explanation | the same specialized skill (each reviews through its review-fix loop); `cf-explain` for walkthroughs, `cf-write-skills` for prompt/workflow/agent files |
 
 Do this exercise in chat.
 
 Claude Code prompt:
 
 ```text
-/cf brainstorm: I want to learn Constructor Studio by building a very small Todo app.
+/cf-brainstorm I want to learn Constructor Studio by building a very small Todo app.
 The app should have a TypeScript HTTP API and a React UI.
 As a user, I should be able to list todos, create one with a title, toggle completion, and delete it.
 Keep the project local, simple, reviewable, and suitable for SDLC artifacts, validation, and traceability practice.
@@ -900,7 +852,7 @@ End this brainstorm session by saving or summarizing the decisions only. Do not 
 Codex prompt:
 
 ```text
-$cf brainstorm: I want to learn Constructor Studio by building a very small Todo app.
+$cf-brainstorm I want to learn Constructor Studio by building a very small Todo app.
 The app should have a TypeScript HTTP API and a React UI.
 As a user, I should be able to list todos, create one with a title, toggle completion, and delete it.
 Keep the project local, simple, reviewable, and suitable for SDLC artifacts, validation, and traceability practice.
@@ -917,51 +869,29 @@ Expected result:
 - The session stops after saved or summarized brainstorm decisions.
 - No implementation yet.
 
-When the git permission boundary appears, choose:
+The interaction runs in this order: (1) the brainstorm panel offer, (2) a one-time sub-agent approval, (3) the proposed expert panel.
 
-```text
-1
-```
-
-For this course, use `commit` mode so write-capable sub-agents have an explicit git boundary and may create a final commit when the workflow later performs approved writes. This does not override write gates: every file write still needs the workflow's write release and your explicit confirmation.
-
-When the brainstorm panel offer appears:
-
-- Choose `save` when it is offered. This is the recommended course path because it persists the transcript, `state.json`, and final `design.md` under `.cf-studio/.cache/brainstorm/...`.
-- If `save` is not offered because the current flow is chat-only, reply `yes` and rely on the wrap-up approval handoff.
-- Use default `save` unless you intentionally want a custom round cap or fan-out behavior. If you want to be explicit, use `save mode=single-agent`.
-
-Default course reply:
+1. Brainstorm panel offer. It reads roughly "Want a brainstorm panel? I'll assemble a 3-6 expert panel for cross-discipline pushback…", with reply grammar `yes` / `no` / `save` (plus optional modifiers such as `:N` for a round cap, `mode=fan-out`, or `mode=single-agent`). Reply `save` for this course so the transcript, `state.json`, and final `design.md` persist under `.cf-studio/.cache/brainstorm/...`:
 
 ```text
 save
 ```
 
-If the agent appears to forget saving, or offers only `yes` even though the save option was shown earlier, reply with the explicit workaround:
+If `save` is not offered because the host is chat-only, reply `yes` and rely on the wrap-up approval handoff. If the session has already moved past the offer with no save path, finish the brainstorm and copy the approved wrap-up summary into `docs/course-notes.md` as fallback evidence.
 
-```text
-save
-```
-
-If the session has already moved past the offer and no save path was created, finish the brainstorm, then copy the approved wrap-up summary and decisions into `docs/course-notes.md` as the fallback brainstorm evidence.
-
-When the host asks for sub-agent approval, choose:
+2. Sub-agent approval (asked once per session). Approve so the facilitator and panel sub-agents run natively:
 
 ```text
 1
 ```
 
-When the proposed panel appears, use the simplest path unless you see a real gap:
-
-```text
-accept
-```
-
-Then start the first topic:
+3. Proposed expert panel and seed topic. The menu offers `start`, `seed:<topic>`, `drop E{N}`, `swap E{N}:<persona>`, `add:<persona>`, or `wrap`. Use the simplest path unless you see a real gap — reply `start` to begin round 1:
 
 ```text
 start
 ```
+
+The git-commit-mode question does not appear during brainstorm — its sub-agents are read-only. You are asked to choose `commit` / `stage` / `none` later, at the first write-capable workflow (for example PRD authoring); choose `commit` for this course so write-capable sub-agents have an explicit git boundary. That choice never overrides write gates: every file write still needs the workflow's write release and your explicit confirmation.
 
 During the brainstorm rounds, keep these course constraints non-negotiable:
 
@@ -999,6 +929,8 @@ If the host asks whether to continue into PRD generation immediately, answer:
 stop after saving the brainstorm decisions; do not generate PRD yet
 ```
 
+Context reset (optional): the brainstorm decisions are saved on disk, and PRD authoring reads them from there. You can `/clear` or open a new chat before the artifact chain to keep context lean — then re-activate (`/cf`; on Codex also re-send `disable autonomous mode`).
+
 ### Lesson 3.2. Create The SDLC Artifact Chain
 
 The SDLC kit is the governing process for this course. Its pipeline is:
@@ -1013,36 +945,20 @@ Each layer transforms the previous layer:
 - ADR captures key architecture decisions and rationale.
 - DESIGN captures HOW: components, interfaces, data model, API shape, sequences, constraints.
 - DECOMPOSITION breaks DESIGN into ordered feature scope with dependencies.
-- FEATURE captures implementable behavior as CDSL flows, algorithms, states, definitions of done, and acceptance criteria.
+- FEATURE captures implementable behavior as CDSL (Constructor DSL) flows, algorithms, states, definitions of done, and acceptance criteria.
 - CODEBASE implements FEATURE, runs tests/build/review, and keeps traceability through scope markers plus per-instruction block markers when FULL traceability mode is active.
 - TESTING / REVIEW validates behavior, markers, references, and semantic correctness.
 
 Create the artifacts from the brainstorm-derived Todo input brief. Use `cf` if that is your host alias; the SDLC kit docs also show `cf-studio` for some kit-specific surfaces.
 
-Artifact write pattern:
+Artifact write pattern: send the authoring prompt for the next artifact directly (for example `cf-sdlc-doc-prd` for the PRD). The skill runs its own preflight, reports the exact target path and write scope, and waits for your approval before writing — there is no separate `cf-explore` step. Include `Approved write scope:` in the prompt, or approve the host's write-confirmation turn for those exact paths.
 
-1. Run a read-only preflight first.
+What the authoring skill reports for an empty registry:
 
-Claude Code prompt:
-
-```text
-/cf analyze: inspect the repo and SDLC kit configuration, then propose the exact artifact paths to create or update for the next SDLC artifact step. Do not modify files.
-```
-
-Codex prompt:
-
-```text
-$cf analyze: inspect the repo and SDLC kit configuration, then propose the exact artifact paths to create or update for the next SDLC artifact step. Do not modify files.
-```
-
-2. Send the generation prompt only after the host reports the exact write scope and you approve it. Include `Approved write scope:` in the prompt, or approve the host's write-confirmation turn for those exact paths.
-
-Expected preflight behavior for an empty registry:
-
-- The analysis may report `Semantic: FAIL` because `artifacts = []` and no PRD exists yet. That is expected at this exact point in the course; it means the SDLC chain has not started, not that setup failed.
-- Treat the reported PRD path as the source of truth for the next prompt. In a fresh `TodoCourse` run this may be `docs/todocourse/PRD.md`; in another repo it may be different.
-- If the host offers a menu such as "continue in this session", "fix prompt", or "plan prompt", do not let it auto-create the artifact from a vague menu choice. Continue with the explicit PRD generation prompt below, replacing the sample path with the exact path from the preflight.
-- Record the preflight path recommendation and the empty-registry status in `docs/course-notes.md`.
+- It may report `Semantic: FAIL` because `artifacts = []` and no PRD exists yet. That is expected at this exact point in the course; it means the SDLC chain has not started, not that setup failed.
+- Treat the reported PRD path as the source of truth. In a fresh `TodoCourse` run this may be `docs/todocourse/PRD.md`; in another repo it may differ.
+- If the host offers a menu such as "continue in this session", "fix prompt", or "plan prompt", do not let it auto-create the artifact from a vague menu choice. Continue with the explicit PRD generation prompt below, using the exact path the skill reported.
+- Record the reported path and the empty-registry status in `docs/course-notes.md`.
 
 ### Lesson 3.2a. PRD, ADR, And DESIGN
 
@@ -1060,34 +976,31 @@ memory
 
 Use `disk` only if you intentionally want to inspect or preserve the generated author plan files across a long session. The normal course path keeps the plan in memory and writes only the approved SDLC artifacts.
 
-The generator may also offer a brainstorm panel before it collects inputs:
+PRD authoring is the first write-capable workflow, so this is where the git-commit-mode question appears: Constructor Studio asks how sub-agents should handle git for the files they write this session — `commit` / `stage` / `none`. Choose `commit` for this course:
 
 ```text
-Want a brainstorm panel before I collect inputs?
+1
 ```
 
-This is normal. It means the generate workflow is giving you a chance to pressure-test the artifact before writing it. For this course, use saved brainstorm sessions deliberately:
+This is asked once per session. If you ran the Module 3 brainstorm, sub-agent dispatch was already approved there; if you skipped it, you are asked to approve sub-agents here instead (reply `1`).
 
-- For PRD, prefer `save` because product requirements are the source evidence for the whole chain.
-- For ADR + DESIGN, prefer `save` if the architecture/design choices are still fuzzy; this gives you a second saved decision session focused on architecture and design.
-- For DECOMPOSITION or FEATURE, prefer `save` when the implementation order or acceptance boundaries are unclear.
-- Reply `no` only when the artifact input is already clear and you want the generator to go straight to collection and writing.
-
-Several short saved brainstorm sessions are better than one huge vague session: PRD brainstorm for product scope, ADR + DESIGN brainstorm for technical decisions, and FEATURE brainstorm for implementation boundaries.
-
-After writing, the generator may offer an automatic review loop:
+Before it writes, the authoring skill (the SDLC doc skills run through `cf-write-docs`) opens two optional gates, each a numbered menu — first an explore gate, then a brainstorm gate:
 
 ```text
-How many automatic review iterations should run before I check in with you?
+Before writing or reviewing docs, brainstorm ambiguous decisions or framing options with cf-brainstorm — or skip? Skip is the default when the approach is already clear. Reply with a number.
+1 brainstorm
+2 skip
 ```
 
-For this course, use the default:
+Skip is the default. For this course you already ran a dedicated brainstorm in Module 3, so reply `2` (skip) at both gates here:
 
 ```text
-5
+2
 ```
 
-Pressing Enter is equivalent when the prompt says the default is 5. Use `0` only when you intentionally want to skip automatic validation/review, and use a smaller number only when the host is in inline fallback mode or context is already tight.
+Reply `1` (brainstorm) only to refine a genuinely ambiguous artifact — that launches `cf-brainstorm` with the offer from Lesson 3.1 (`yes` / `no` / `save`); prefer `save` so the decisions persist. Brainstorm separately per layer only when it helps: ADR + DESIGN when the architecture/design choices are still fuzzy, DECOMPOSITION or FEATURE when implementation order or acceptance boundaries are unclear.
+
+After writing, the skill runs its own review-fix loop — it does not ask how many iterations to run. It runs the deterministic gate (tests, lint, typecheck, build where applicable), then a semantic review, and asks you to approve fixes one finding at a time. Each approved fix is applied, the deterministic gate re-runs, and the review repeats; the loop stops and reports any remaining findings when no fix is applied (nothing approved or nothing applicable). You stay in control through the per-finding approval gate, not an iteration count.
 
 PRD.
 
@@ -1096,9 +1009,9 @@ Let the agent find the saved brainstorm evidence inside the PRD generation turn.
 Claude Code prompt:
 
 ```text
-/cf generate: make PRD for the Todo app from the approved brainstorm wrap-up.
+/cf-sdlc-doc-prd make PRD for the Todo app from the approved brainstorm wrap-up.
 Approved write scope:
-- the exact PRD path reported by the preflight, for example docs/todocourse/PRD.md
+- the exact PRD path reported by the skill, for example docs/todocourse/PRD.md
 Before writing, find the newest saved brainstorm session under .cf-studio/.cache/brainstorm that matches the Todo PRD/product-requirements brainstorm.
 Use its design.md as the original input evidence and its state.json as supporting context.
 Report the exact design.md and state.json paths you selected.
@@ -1110,9 +1023,9 @@ Do not include API schema, React component design, implementation tasks, or code
 Codex prompt:
 
 ```text
-$cf generate: make PRD for the Todo app from the approved brainstorm wrap-up.
+$cf-sdlc-doc-prd make PRD for the Todo app from the approved brainstorm wrap-up.
 Approved write scope:
-- the exact PRD path reported by the preflight, for example docs/todocourse/PRD.md
+- the exact PRD path reported by the skill, for example docs/todocourse/PRD.md
 Before writing, find the newest saved brainstorm session under .cf-studio/.cache/brainstorm that matches the Todo PRD/product-requirements brainstorm.
 Use its design.md as the original input evidence and its state.json as supporting context.
 Report the exact design.md and state.json paths you selected.
@@ -1126,13 +1039,13 @@ Validate PRD.
 Claude Code prompt:
 
 ```text
-/cf analyze: validate PRD for the Todo app. Check structural, semantic, and reference quality. Do not modify code.
+/cf-sdlc-doc-prd validate PRD for the Todo app. Check structural, semantic, and reference quality. Do not modify code.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: validate PRD for the Todo app. Check structural, semantic, and reference quality. Do not modify code.
+$cf-sdlc-doc-prd validate PRD for the Todo app. Check structural, semantic, and reference quality. Do not modify code.
 ```
 
 Read the validation result before moving on:
@@ -1142,28 +1055,44 @@ Read the validation result before moving on:
 - decide whether to revise the artifact or proceed;
 - record the decision in `docs/course-notes.md`.
 
-ADR + DESIGN.
+ADR, then DESIGN. Author them in order with the two specialized SDLC skills: `cf-sdlc-doc-adr` first, then `cf-sdlc-doc-design`.
 
-Claude Code prompt:
+ADR — Claude Code prompt:
 
 ```text
-/cf generate: make ADR and DESIGN for the Todo app from the PRD.
+/cf-sdlc-doc-adr make the ADR for the Todo app from the PRD.
 Approved write scope:
-- the exact ADR path reported by the preflight, for example docs/todocourse/ADR/cpt-todocourse-adr-todo-architecture.md
-- the exact DESIGN path reported by the preflight, for example docs/todocourse/DESIGN.md
+- the exact ADR path reported by the skill, for example docs/todocourse/ADR/cpt-todocourse-adr-todo-architecture.md
 ADR decision: TypeScript HTTP API backend plus Vite React client for this course.
+Do not implement code.
+```
+
+ADR — Codex prompt:
+
+```text
+$cf-sdlc-doc-adr make the ADR for the Todo app from the PRD.
+Approved write scope:
+- the exact ADR path reported by the skill, for example docs/todocourse/ADR/cpt-todocourse-adr-todo-architecture.md
+ADR decision: TypeScript HTTP API backend plus Vite React client for this course.
+Do not implement code.
+```
+
+DESIGN — Claude Code prompt:
+
+```text
+/cf-sdlc-doc-design make the DESIGN for the Todo app from the PRD and ADR.
+Approved write scope:
+- the exact DESIGN path reported by the skill, for example docs/todocourse/DESIGN.md
 DESIGN must define the API boundary, Todo data model, UI/API interaction, local dev ports, validation approach, and traceability expectations.
 Do not implement code.
 ```
 
-Codex prompt:
+DESIGN — Codex prompt:
 
 ```text
-$cf generate: make ADR and DESIGN for the Todo app from the PRD.
+$cf-sdlc-doc-design make the DESIGN for the Todo app from the PRD and ADR.
 Approved write scope:
-- the exact ADR path reported by the preflight, for example docs/todocourse/ADR/cpt-todocourse-adr-todo-architecture.md
-- the exact DESIGN path reported by the preflight, for example docs/todocourse/DESIGN.md
-ADR decision: TypeScript HTTP API backend plus Vite React client for this course.
+- the exact DESIGN path reported by the skill, for example docs/todocourse/DESIGN.md
 DESIGN must define the API boundary, Todo data model, UI/API interaction, local dev ports, validation approach, and traceability expectations.
 Do not implement code.
 ```
@@ -1173,13 +1102,13 @@ Validate ADR and DESIGN.
 Claude Code prompt:
 
 ```text
-/cf analyze: validate ADR and DESIGN against the PRD and SDLC kit rules. Do not modify code.
+/cf-sdlc-doc-design validate ADR and DESIGN against the PRD and SDLC kit rules. Do not modify code.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: validate ADR and DESIGN against the PRD and SDLC kit rules. Do not modify code.
+$cf-sdlc-doc-design validate ADR and DESIGN against the PRD and SDLC kit rules. Do not modify code.
 ```
 
 Checkpoint:
@@ -1196,9 +1125,9 @@ DECOMPOSITION.
 Claude Code prompt:
 
 ```text
-/cf generate: decompose the Todo DESIGN into ordered feature scope.
+/cf-sdlc-decompose decompose the Todo DESIGN into ordered feature scope.
 Approved write scope:
-- the exact DECOMPOSITION path reported by the preflight, for example docs/todocourse/DECOMPOSITION.md
+- the exact DECOMPOSITION path reported by the skill, for example docs/todocourse/DECOMPOSITION.md
 Include at least one feature for Todo CRUD behavior that covers list, create, toggle, and delete.
 Keep dependencies explicit and implementation units small.
 Do not implement code.
@@ -1207,9 +1136,9 @@ Do not implement code.
 Codex prompt:
 
 ```text
-$cf generate: decompose the Todo DESIGN into ordered feature scope.
+$cf-sdlc-decompose decompose the Todo DESIGN into ordered feature scope.
 Approved write scope:
-- the exact DECOMPOSITION path reported by the preflight, for example docs/todocourse/DECOMPOSITION.md
+- the exact DECOMPOSITION path reported by the skill, for example docs/todocourse/DECOMPOSITION.md
 Include at least one feature for Todo CRUD behavior that covers list, create, toggle, and delete.
 Keep dependencies explicit and implementation units small.
 Do not implement code.
@@ -1220,13 +1149,13 @@ Validate DECOMPOSITION.
 Claude Code prompt:
 
 ```text
-/cf analyze: validate DECOMPOSITION against DESIGN and PRD. Check coverage, dependencies, IDs, and references. Do not modify code.
+/cf-sdlc-decompose validate DECOMPOSITION against DESIGN and PRD. Check coverage, dependencies, IDs, and references. Do not modify code.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: validate DECOMPOSITION against DESIGN and PRD. Check coverage, dependencies, IDs, and references. Do not modify code.
+$cf-sdlc-decompose validate DECOMPOSITION against DESIGN and PRD. Check coverage, dependencies, IDs, and references. Do not modify code.
 ```
 
 FEATURE.
@@ -1236,9 +1165,9 @@ Recommended course convention: put FEATURE artifacts under `docs/todocourse/feat
 Claude Code prompt:
 
 ```text
-/cf generate: make FEATURE for todo-crud from DECOMPOSITION and DESIGN.
+/cf-sdlc-doc-feature make FEATURE for todo-crud from DECOMPOSITION and DESIGN.
 Approved write scope:
-- the exact FEATURE path reported by the preflight, for example docs/todocourse/features/todo-crud.md
+- the exact FEATURE path reported by the skill, for example docs/todocourse/features/todo-crud.md
 The FEATURE must include CDSL actor flows for list, create, toggle, and delete; processing algorithms; Todo state behavior where relevant; definitions of done; acceptance criteria; and upstream references.
 Preserve the SDLC FEATURE template structure, including the top-level `featstatus` ID and the parent DECOMPOSITION feature reference.
 Do not implement code.
@@ -1247,9 +1176,9 @@ Do not implement code.
 Codex prompt:
 
 ```text
-$cf generate: make FEATURE for todo-crud from DECOMPOSITION and DESIGN.
+$cf-sdlc-doc-feature make FEATURE for todo-crud from DECOMPOSITION and DESIGN.
 Approved write scope:
-- the exact FEATURE path reported by the preflight, for example docs/todocourse/features/todo-crud.md
+- the exact FEATURE path reported by the skill, for example docs/todocourse/features/todo-crud.md
 The FEATURE must include CDSL actor flows for list, create, toggle, and delete; processing algorithms; Todo state behavior where relevant; definitions of done; acceptance criteria; and upstream references.
 Preserve the SDLC FEATURE template structure, including the top-level `featstatus` ID and the parent DECOMPOSITION feature reference.
 Do not implement code.
@@ -1260,13 +1189,13 @@ Validate FEATURE.
 Claude Code prompt:
 
 ```text
-/cf analyze: validate FEATURE todo-crud for CDSL structure, semantic completeness, upstream references, definitions of done, and implementation readiness. Do not modify code.
+/cf-sdlc-doc-feature validate FEATURE todo-crud for CDSL structure, semantic completeness, upstream references, definitions of done, and implementation readiness. Do not modify code.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: validate FEATURE todo-crud for CDSL structure, semantic completeness, upstream references, definitions of done, and implementation readiness. Do not modify code.
+$cf-sdlc-doc-feature validate FEATURE todo-crud for CDSL structure, semantic completeness, upstream references, definitions of done, and implementation readiness. Do not modify code.
 ```
 
 Checkpoint:
@@ -1278,7 +1207,7 @@ Checkpoint:
 
 ### Lesson 3.2c. Validate The Artifact Chain
 
-Expected artifact locations are the paths reported by the preflight and registered in `.cf-studio/config/artifacts.toml`. In a fresh `TodoCourse` run, they may look like:
+Expected artifact locations are the paths the skill reports and registers in `.cf-studio/config/artifacts.toml`. In a fresh `TodoCourse` run, they may look like:
 
 - `docs/todocourse/PRD.md`
 - `docs/todocourse/ADR/cpt-todocourse-adr-*.md`
@@ -1307,6 +1236,8 @@ Checkpoint:
 - The FEATURE artifact, not the brainstorm cache or wrap-up summary, is now the governing artifact for implementation.
 - If the kit generated different artifact paths, record those paths and use them consistently from here onward.
 
+Context reset (optional): the artifact chain is on disk and the plan reads the FEATURE from `.cf-studio/config/artifacts.toml`. You can `/clear` or start a new chat before planning — then re-activate (`/cf`; on Codex also re-send `disable autonomous mode`).
+
 ### Lesson 3.3. Create A Plan
 
 Now create a plan for the Todo app work.
@@ -1321,9 +1252,10 @@ Pre-plan checkpoint:
 Claude Code prompt:
 
 ```text
-/cf plan: create a small implementation plan for the Todo FEATURE artifact.
+/cf-plan create a small implementation plan for the Todo FEATURE artifact.
 Treat the registered Todo FEATURE path from `.cf-studio/config/artifacts.toml` as the governing artifact.
 Assume the first phase is a bounded backend/API slice, the second phase is a bounded React UI slice, and the final phase is validation plus review.
+The first phase must also create the project shell (package.json, dependencies, the dev:api/dev:ui/test/typecheck/build scripts, .gitignore, root tsconfig, and the Vite ui/) before or with the backend code, since the app is built here from the FEATURE.
 Preserve SDLC kit traceability at the artifact level. Defer code marker and codebase scan-root decisions until implementation begins.
 The plan must build one TypeScript backend/API slice and one React UI slice.
 Use the actual course repo shape:
@@ -1337,9 +1269,10 @@ Do not implement yet.
 Codex prompt:
 
 ```text
-$cf plan: create a small implementation plan for the Todo FEATURE artifact.
+$cf-plan create a small implementation plan for the Todo FEATURE artifact.
 Treat the registered Todo FEATURE path from `.cf-studio/config/artifacts.toml` as the governing artifact.
 Assume the first phase is a bounded backend/API slice, the second phase is a bounded React UI slice, and the final phase is validation plus review.
+The first phase must also create the project shell (package.json, dependencies, the dev:api/dev:ui/test/typecheck/build scripts, .gitignore, root tsconfig, and the Vite ui/) before or with the backend code, since the app is built here from the FEATURE.
 Preserve SDLC kit traceability at the artifact level. Defer code marker and codebase scan-root decisions until implementation begins.
 The plan must build one TypeScript backend/API slice and one React UI slice.
 Use the actual course repo shape:
@@ -1350,6 +1283,8 @@ Keep phases small. Include validation and review evidence.
 Do not implement yet.
 ```
 
+When `cf-plan` starts it first opens an explore/brainstorm gate (`Before assessing scope, explore project resources or brainstorm decisions — or skip straight to assessment? Reply with a number.`, options `1 explore` / `2 brainstorm` / `3 skip`). The FEATURE already defines the work, so reply `3` (skip).
+
 Expected result:
 
 - A plan directory under `.cf-studio/.plans/` when plan writes are available.
@@ -1358,20 +1293,20 @@ Expected result:
 - A next-phase execution prompt or equivalent "run this phase next" instruction.
 - The response explicitly reports the created plan path.
 
-If the plan workflow asks how completed plans should be handled, choose:
+If the plan workflow asks how completed plans should be handled (lifecycle: `gitignore` / `cleanup` / `archive` / `manual`), choose:
 
 ```text
-1
+gitignore
 ```
 
-This selects `gitignore`, so the generated plan files stay available locally while `.cf-studio/.plans/` remains out of version control. This is the recommended course path: the student can inspect `plan.toml`, briefs, and phase files throughout the course without committing temporary planning artifacts.
+This keeps the generated plan files available locally while `.cf-studio/.plans/` remains out of version control. This is the recommended course path: the student can inspect `plan.toml`, briefs, and phase files throughout the course without committing temporary planning artifacts.
 
 Before confirming plan file writes, read the decomposition preview. If it proposes output paths like `backend/src/...` or `frontend/src/...`, do not answer `y` yet. Correct the plan in chat and require the repo shape from this lesson: `src/server/`, `tests/`, and `ui/src/`.
 
-After the manifest and briefs are written, the plan workflow may ask how to produce compiled phase files:
+After the manifest and briefs are written, the plan workflow asks how to produce the compiled phase files:
 
 ```text
-The manifest and briefs are ready on disk. Choose how to produce the phase files.
+Brief package prepared (plan.toml + N briefs, 0/N phase files) — choose how to produce phase files: 1 inline (uses this chat's budget); 2 prompts (skips validation); 3 subagents (needs sub-agent approval); 4 stop (keep briefs). Reply with a number.
 ```
 
 For this course, choose:
@@ -1395,13 +1330,13 @@ If the host returns a chat-only plan instead of plan files, treat that as a fall
 Claude Code prompt:
 
 ```text
-/cf plan: restate this Todo plan as a canonical plan with plan.toml, brief files, and phase files if the host can write them. Do not implement yet.
+/cf-plan restate this Todo plan as a canonical plan with plan.toml, brief files, and phase files if the host can write them. Do not implement yet.
 ```
 
 Codex prompt:
 
 ```text
-$cf plan: restate this Todo plan as a canonical plan with plan.toml, brief files, and phase files if the host can write them. Do not implement yet.
+$cf-plan restate this Todo plan as a canonical plan with plan.toml, brief files, and phase files if the host can write them. Do not implement yet.
 ```
 
 If plan files still cannot be produced, copy the next-phase prompt into `docs/course-notes.md` and record that no canonical plan artifacts were created yet.
@@ -1429,7 +1364,7 @@ Checkpoint:
 - Paste the plan path into `docs/course-notes.md`.
 - Write the next phase you would execute and why.
 
-### Lesson 3.5. Plan Lifecycle States
+### Lesson 3.4. Plan Lifecycle States
 
 A plan can be valid even when not every generated file is present forever.
 
@@ -1463,7 +1398,7 @@ Evidence rule:
 
 Do not treat every missing `phase-*.md` as failure. Treat it as failure only when the manifest says compiled phases should exist and there is no lifecycle explanation.
 
-### Lesson 3.6. Execute One Compiled Phase As The Canonical Work Unit
+### Lesson 3.5. Execute One Compiled Phase As The Canonical Work Unit
 
 In Constructor Studio, the compiled `phase-*.md` file is the canonical work unit. Do not execute from chat memory when a compiled phase exists.
 
@@ -1532,7 +1467,7 @@ Checkpoint:
 - `docs/course-notes.md` records the selected `phase-*.md` path, the exact `phases[].status` evidence copied from `plan.toml` before and after execution, and the next-phase prompt.
 - `docs/course-notes.md` also explains why that phase was the correct next phase based on the manifest state, not memory or guesswork.
 
-### Lesson 3.7. Recovery From A Bad Plan
+### Lesson 3.6. Recovery From A Bad Plan
 
 A bad plan is usually too broad, not evidence-based, or missing validation.
 
@@ -1541,13 +1476,13 @@ If the plan tries to build everything in one step, recover with a read-only revi
 Claude Code prompt:
 
 ```text
-/cf analyze: review this plan for unsafe scope, missing validation, missing review evidence, and unclear Todo acceptance criteria. Do not modify files.
+/cf-plan review this plan for unsafe scope, missing validation, missing review evidence, and unclear Todo acceptance criteria. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review this plan for unsafe scope, missing validation, missing review evidence, and unclear Todo acceptance criteria. Do not modify files.
+$cf-plan review this plan for unsafe scope, missing validation, missing review evidence, and unclear Todo acceptance criteria. Do not modify files.
 ```
 
 Then ask for a narrower plan.
@@ -1555,14 +1490,14 @@ Then ask for a narrower plan.
 Claude Code prompt:
 
 ```text
-/cf plan: revise the Todo implementation plan so the first phase only creates the backend/API model and operations, the second phase connects the React UI, and the final phase validates and prepares the handoff.
+/cf-plan revise the Todo implementation plan so the first phase only creates the backend/API model and operations, the second phase connects the React UI, and the final phase validates and prepares the handoff.
 Keep the Todo FEATURE artifact as the governing artifact and preserve SDLC traceability markers.
 ```
 
 Codex prompt:
 
 ```text
-$cf plan: revise the Todo implementation plan so the first phase only creates the backend/API model and operations, the second phase connects the React UI, and the final phase validates and prepares the handoff.
+$cf-plan revise the Todo implementation plan so the first phase only creates the backend/API model and operations, the second phase connects the React UI, and the final phase validates and prepares the handoff.
 Keep the Todo FEATURE artifact as the governing artifact and preserve SDLC traceability markers.
 ```
 
@@ -1574,29 +1509,9 @@ Checkpoint:
 
 ### Lesson 4.0. Pre-Implementation Command Gate
 
-You are now about to write product code, so deferred setup gaps become actionable.
+You are now about to write product code. The backend implementation step creates the project shell (`package.json`, dependencies, the package scripts, `src/server/`, and the Vite `ui/`) along with the backend code, so confirm the plan for that first.
 
-Run a read-only preflight first.
-
-Claude Code prompt:
-
-```text
-/cf analyze: before Todo implementation begins, inspect package.json, tsconfig needs, src/server, tests, and ui config.
-Confirm the exact command contract needed for Module 4 and identify the minimal files that must be created or changed before backend code can be validated.
-Do not modify files.
-Classify each issue as BLOCKS_IMPLEMENTATION or DEFERRED.
-```
-
-Codex prompt:
-
-```text
-$cf analyze: before Todo implementation begins, inspect package.json, tsconfig needs, src/server, tests, and ui config.
-Confirm the exact command contract needed for Module 4 and identify the minimal files that must be created or changed before backend code can be validated.
-Do not modify files.
-Classify each issue as BLOCKS_IMPLEMENTATION or DEFERRED.
-```
-
-Expected command contract for the core path:
+The core path uses this command contract:
 
 ```bash
 npm run dev:api
@@ -1606,9 +1521,9 @@ npm run typecheck
 npm run build
 ```
 
-At this point, `dev:api`, `typecheck`, and `build` must become real implementation/validation commands. It is acceptable that they were deferred in Module 2; it is not acceptable to start the backend slice without a plan to make them pass in or before the backend implementation write.
+`dev:api`, `typecheck`, and `build` must become real implementation/validation commands. The backend implementation step creates `package.json`, the dependencies, and these scripts. Do not start the backend slice without a plan to make them pass in or before the backend implementation write.
 
-If the preflight says the repo cannot support the planned TypeScript HTTP API and React client, do not invent a different core architecture mid-course. Stop, record the gap in `docs/course-notes.md`, and get approval for an alternate setup.
+If the planned TypeScript HTTP API and React client cannot be supported by the repo, do not invent a different core architecture mid-course. Stop, record the gap in `docs/course-notes.md`, and get approval for an alternate setup.
 
 Choose the implementation traceability mode now:
 
@@ -1622,7 +1537,7 @@ If you choose `FULL` and the implementation roots are not registered yet, do one
 Claude Code prompt:
 
 ```text
-/cf generate: update only .cf-studio/config/artifacts.toml so Constructor Studio can scan the Todo course implementation roots for the already-created Todo FEATURE.
+/cf-coding update only .cf-studio/config/artifacts.toml so Constructor Studio can scan the Todo course implementation roots for the already-created Todo FEATURE.
 Approved write scope:
 - .cf-studio/config/artifacts.toml
 Required outcomes:
@@ -1637,7 +1552,7 @@ After writing, report the exact codebase entries and the FEATURE path they suppo
 Codex prompt:
 
 ```text
-$cf generate: update only .cf-studio/config/artifacts.toml so Constructor Studio can scan the Todo course implementation roots for the already-created Todo FEATURE.
+$cf-coding update only .cf-studio/config/artifacts.toml so Constructor Studio can scan the Todo course implementation roots for the already-created Todo FEATURE.
 Approved write scope:
 - .cf-studio/config/artifacts.toml
 Required outcomes:
@@ -1696,6 +1611,8 @@ Do not start a fresh implementation prompt here. Module 3 already created and re
 
 Run the next ready compiled phase from the plan manifest. In the normal course path, this is phase 1: the TypeScript backend/API slice.
 
+Phase 1 also creates the project shell — `package.json`, dependencies, the `dev:api`/`dev:ui`/`test`/`typecheck`/`build` scripts, `.gitignore`, the root `tsconfig`, and the Vite `ui/` — before or alongside the backend code, exactly as the plan and FEATURE require. If your compiled phase 1 does not include this shell, update the plan before executing.
+
 Claude Code prompt:
 
 ```text
@@ -1735,11 +1652,12 @@ If your plan path differs, replace `.cf-studio/.plans/implement-todo-crud/plan.t
 Expected result:
 
 - Phase 1 status in `plan.toml` is updated from disk evidence.
+- The project shell (`package.json`, dependencies, scripts, `.gitignore`, `ui/`) is created as part of phase 1.
 - Backend/API files are created only in the repo shape approved by the plan and artifacts.
 - Tests, build, or documented behavior proof are run according to the phase file.
 - The agent reports the next-phase prompt without executing phase 2 yet.
 
-If the agent tries to bypass the compiled phase and starts proposing a separate `/cf generate` implementation, stop and redirect it to the plan manifest and phase file.
+If the agent tries to bypass the compiled phase and starts proposing a separate implementation pass, stop and redirect it to the plan manifest and phase file.
 
 Checkpoint:
 
@@ -1781,14 +1699,14 @@ If validation fails, do not ask for a broad fix. Ask for a narrow triage.
 Claude Code prompt:
 
 ```text
-/cf analyze: triage these Todo backend/API validation failures against the Todo FEATURE and DESIGN.
+/cf-coding triage these Todo backend/API validation failures against the Todo FEATURE and DESIGN.
 Return the smallest safe fix plan. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: triage these Todo backend/API validation failures against the Todo FEATURE and DESIGN.
+$cf-coding triage these Todo backend/API validation failures against the Todo FEATURE and DESIGN.
 Return the smallest safe fix plan. Do not modify files.
 ```
 
@@ -1797,6 +1715,8 @@ Checkpoint:
 - Paste the exact command, pass/fail result, and a short output excerpt or raw log reference into `docs/course-notes.md`.
 
 ## Module 5. Implement The React UI Slice
+
+Context reset (optional): the backend slice is committed and the UI slice reads the FEATURE and plan from disk. A `/clear` or new chat here keeps context lean — re-activate (`/cf`; on Codex also re-send `disable autonomous mode`) first.
 
 ### Lesson 5.1. Define The UI Behavior
 
@@ -1831,30 +1751,15 @@ Checkpoint:
 
 Write boundary before generation:
 
-- First run a read-only preflight so the agent names the exact target files, validation commands, and bounded write scope.
-- First approve the UI contract and bounded product scope.
-- Then approve the exact file-write scope for the UI slice.
+- Approve the UI contract and bounded product scope first.
+- Then approve the exact file-write scope for the UI slice. `cf-sdlc-implement` reports the target files, validation commands, write scope, and required traceability coverage before it writes, so you approve those exact paths.
 
-Read-only preflight.
-
-Claude Code prompt:
-
-```text
-/cf analyze: before any Todo UI write, inspect the repo and propose the exact target files, validation commands, write scope, FEATURE artifact sync scope, and required traceability coverage for the React UI slice from the Todo FEATURE artifact. Do not modify files.
-```
-
-Codex prompt:
-
-```text
-$cf analyze: before any Todo UI write, inspect the repo and propose the exact target files, validation commands, write scope, FEATURE artifact sync scope, and required traceability coverage for the React UI slice from the Todo FEATURE artifact. Do not modify files.
-```
-
-Only after that response should you approve the write scope and run generation.
+Run generation.
 
 Claude Code prompt:
 
 ```text
-/cf generate: implement the React UI slice for the Todo app from the Todo FEATURE artifact.
+/cf-sdlc-implement implement the React UI slice for the Todo app from the Todo FEATURE artifact.
 Approved write scope:
 - ui/src/App.tsx
 - ui/src/components/TodoList.tsx
@@ -1882,7 +1787,7 @@ After writing, report changed files and validation steps.
 Codex prompt:
 
 ```text
-$cf generate: implement the React UI slice for the Todo app from the Todo FEATURE artifact.
+$cf-sdlc-implement implement the React UI slice for the Todo app from the Todo FEATURE artifact.
 Approved write scope:
 - ui/src/App.tsx
 - ui/src/components/TodoList.tsx
@@ -1907,7 +1812,7 @@ Scope:
 After writing, report changed files and validation steps.
 ```
 
-If your preflight named different files or commands, replace every sample path and command above before sending the prompt.
+If the skill named different files or commands, replace every sample path and command above before sending the prompt.
 
 Expected result:
 
@@ -1920,13 +1825,13 @@ If the project has no React setup, ask for a plan before adding one.
 Claude Code prompt:
 
 ```text
-/cf plan: the repo does not appear to have a React setup. Plan the smallest course-appropriate React UI setup for the Todo app, including validation and handoff evidence. Do not implement yet.
+/cf-plan the repo does not appear to have a React setup. Plan the smallest course-appropriate React UI setup for the Todo app, including validation and handoff evidence. Do not implement yet.
 ```
 
 Codex prompt:
 
 ```text
-$cf plan: the repo does not appear to have a React setup. Plan the smallest course-appropriate React UI setup for the Todo app, including validation and handoff evidence. Do not implement yet.
+$cf-plan the repo does not appear to have a React setup. Plan the smallest course-appropriate React UI setup for the Todo app, including validation and handoff evidence. Do not implement yet.
 ```
 
 Checkpoint:
@@ -1965,7 +1870,7 @@ Then run semantic review.
 Claude Code prompt:
 
 ```text
-/cf analyze: review the Todo backend/API and React UI changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
+/cf-coding review the Todo backend/API and React UI changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
 Focus on correctness, missing tests, scope creep, validation gaps, and review readiness.
 Do not modify files.
 ```
@@ -1973,7 +1878,7 @@ Do not modify files.
 Codex prompt:
 
 ```text
-$cf analyze: review the Todo backend/API and React UI changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
+$cf-coding review the Todo backend/API and React UI changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
 Focus on correctness, missing tests, scope creep, validation gaps, and review readiness.
 Do not modify files.
 ```
@@ -1982,7 +1887,7 @@ Expected result:
 
 - Findings are separated from fixes.
 - You know which findings are blockers.
-- You know whether another bounded `cf generate:` pass is needed.
+- You know whether another bounded `cf-coding` pass is needed.
 
 Use this blocker rule:
 
@@ -2007,7 +1912,7 @@ Write boundary before remediation:
 Claude Code prompt:
 
 ```text
-/cf generate: fix only the blocker findings from the Todo review.
+/cf-coding fix only the blocker findings from the Todo review.
 Use the Todo FEATURE artifact as the governing implementation artifact, and check upstream DESIGN/DECOMPOSITION/PRD when a fix changes behavior or architecture.
 Finding IDs/text:
 - BLOCKER-1: createTodo accepts blank titles and violates the service contract rule that titles must not be blank after trimming.
@@ -2028,7 +1933,7 @@ After writing, report changed files, validation commands, and remaining risks.
 Codex prompt:
 
 ```text
-$cf generate: fix only the blocker findings from the Todo review.
+$cf-coding fix only the blocker findings from the Todo review.
 Use the Todo FEATURE artifact as the governing implementation artifact, and check upstream DESIGN/DECOMPOSITION/PRD when a fix changes behavior or architecture.
 Finding IDs/text:
 - BLOCKER-1: createTodo accepts blank titles and violates the service contract rule that titles must not be blank after trimming.
@@ -2063,7 +1968,7 @@ Then run a post-fix semantic review against the current code before handoff.
 Claude Code prompt:
 
 ```text
-/cf analyze: review the current Todo code after the blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
+/cf-coding review the current Todo code after the blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
 Focus on whether the blockers are actually resolved, whether validation gaps remain, and whether any new scope creep was introduced.
 Do not modify files.
 ```
@@ -2071,7 +1976,7 @@ Do not modify files.
 Codex prompt:
 
 ```text
-$cf analyze: review the current Todo code after the blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
+$cf-coding review the current Todo code after the blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD.
 Focus on whether the blockers are actually resolved, whether validation gaps remain, and whether any new scope creep was introduced.
 Do not modify files.
 ```
@@ -2169,13 +2074,13 @@ Fill it from actual evidence. Do not invent green checks.
 Claude Code prompt:
 
 ```text
-/cf analyze: review docs/review-handoff.md for missing evidence, hidden risk, and unclear human approval boundary. Do not modify files.
+/cf-write-docs review docs/review-handoff.md for missing evidence, hidden risk, and unclear human approval boundary. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review docs/review-handoff.md for missing evidence, hidden risk, and unclear human approval boundary. Do not modify files.
+$cf-write-docs review docs/review-handoff.md for missing evidence, hidden risk, and unclear human approval boundary. Do not modify files.
 ```
 
 Checkpoint:
@@ -2199,7 +2104,7 @@ Start with the brownfield gate, not with blind reinitialization.
 - Verify `.cf-studio/` exists and the host integrations you need are current.
 - Do not rerun `cfs init` on a healthy initialized repo.
 - Do not regenerate agents unless the relevant host files are missing or stale.
-- Use `cf auto-config` to inspect and refresh inferred repo-local rules only when the current session has not already verified them.
+- Use `cf-auto-config` to inspect and refresh inferred repo-local rules only when the current session has not already verified them.
 
 In chat, activate Constructor Studio first:
 
@@ -2217,13 +2122,13 @@ If the inferred rules are wrong, run one bounded generate pass to fix only the r
 Claude Code prompt:
 
 ```text
-/cf auto-config
+/cf-auto-config
 
-/cf analyze: review the inferred project rules and call out anything that does not match how this Todo repo actually works. Do not modify files.
+/cf-write-skills review the inferred project rules and call out anything that does not match how this Todo repo actually works. Do not modify files.
 
-/cf analyze: summarize current Todo app conventions, architecture boundaries, test conventions, and risky areas. Do not modify files.
+/cf-explore summarize current Todo app conventions, architecture boundaries, test conventions, and risky areas. Do not modify files.
 
-/cf plan: create a safe brownfield re-entry plan for this already-initialized Todo repo before any future feature edits.
+/cf-plan create a safe brownfield re-entry plan for this already-initialized Todo repo before any future feature edits.
 Constraints:
 - phase 1 is inspection and convention alignment only;
 - validate after each phase;
@@ -2233,13 +2138,13 @@ Constraints:
 Codex prompt:
 
 ```text
-$cf auto-config
+$cf-auto-config
 
-$cf analyze: review the inferred project rules and call out anything that does not match how this Todo repo actually works. Do not modify files.
+$cf-write-skills review the inferred project rules and call out anything that does not match how this Todo repo actually works. Do not modify files.
 
-$cf analyze: summarize current Todo app conventions, architecture boundaries, test conventions, and risky areas. Do not modify files.
+$cf-explore summarize current Todo app conventions, architecture boundaries, test conventions, and risky areas. Do not modify files.
 
-$cf plan: create a safe brownfield re-entry plan for this already-initialized Todo repo before any future feature edits.
+$cf-plan create a safe brownfield re-entry plan for this already-initialized Todo repo before any future feature edits.
 Constraints:
 - phase 1 is inspection and convention alignment only;
 - validate after each phase;
@@ -2299,13 +2204,13 @@ Use `--source` when a workspace source named `docs` exists. If it does not exist
 Claude Code prompt:
 
 ```text
-/cf map: show the local and workspace traceability edges that affect the Todo feature, and call out anything degraded or unresolved. Do not modify files.
+/cf-map show the local and workspace traceability edges that affect the Todo feature, and call out anything degraded or unresolved. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf map: show the local and workspace traceability edges that affect the Todo feature, and call out anything degraded or unresolved. Do not modify files.
+$cf-map show the local and workspace traceability edges that affect the Todo feature, and call out anything degraded or unresolved. Do not modify files.
 ```
 
 Expected result:
@@ -2336,23 +2241,23 @@ Useful chat recovery.
 Claude Code prompt:
 
 ```text
-/cf analyze: summarize this oversized Todo review input into the smallest safe review units, preserving exact filenames, findings, and follow-up questions. Do not modify files.
+/cf-explore summarize this oversized Todo review input into the smallest safe review units, preserving exact filenames, findings, and follow-up questions. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: summarize this oversized Todo review input into the smallest safe review units, preserving exact filenames, findings, and follow-up questions. Do not modify files.
+$cf-explore summarize this oversized Todo review input into the smallest safe review units, preserving exact filenames, findings, and follow-up questions. Do not modify files.
 ```
 
 Recovery drill:
 
 | Problem | Recovery |
 |---|---|
-| Validation fails and the cause is unclear | Ask `cf analyze:` to triage the failure first, then fix only the bounded blocker set. |
-| `cfs validate --local-only` passes but workspace validation or CI fails | Compare `cfs validate --local-only` with `cfs validate`, compare `cfs map --local-only` with `cfs map`, and use `cf map:` if you need a read-only explanation of the degraded edges. |
-| Review or validation mentions language/script issues | Use human review of the learner-facing copy plus the normal repo validation flow; if wording risk still matters, ask `cf analyze:` to point out unclear passages without treating language review as a public `cfs` command. |
-| Traceability shape is unclear | Optionally run `cfs map`, `cfs map --local-only`, or `cf map:` to see whether the missing edge is local or workspace-wide. |
+| Validation fails and the cause is unclear | Ask `cf-coding` to triage the failure and fix only the bounded blocker set. |
+| `cfs validate --local-only` passes but workspace validation or CI fails | Compare `cfs validate --local-only` with `cfs validate`, compare `cfs map --local-only` with `cfs map`, and use `cf-map` if you need a read-only explanation of the degraded edges. |
+| Review or validation mentions language/script issues | Use human review of the learner-facing copy plus the normal repo validation flow; if wording risk still matters, ask `cf-write-docs` to point out unclear passages without treating language review as a public `cfs` command. |
+| Traceability shape is unclear | Optionally run `cfs map`, `cfs map --local-only`, or `cf-map` to see whether the missing edge is local or workspace-wide. |
 | The host blocks writes because confirmation or safety gates were not satisfied | Give an explicit bounded write instruction, or restate `read-only` if this should be analysis only. If the host integration is stale, regenerate it and retry from repo root. |
 | The host wrote during a review request | Stop, inspect the diff, revert only with human intent, then restart in a fresh read-only session. |
 
@@ -2361,20 +2266,20 @@ Explain the recovery state when needed.
 Claude Code prompt:
 
 ```text
-/cf analyze: explain why the Todo validation or review state failed, which evidence is local-only versus workspace-wide, and the safest next recovery step. Do not modify files.
+/cf-explain explain why the Todo validation or review state failed, which evidence is local-only versus workspace-wide, and the safest next recovery step. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: explain why the Todo validation or review state failed, which evidence is local-only versus workspace-wide, and the safest next recovery step. Do not modify files.
+$cf-explain explain why the Todo validation or review state failed, which evidence is local-only versus workspace-wide, and the safest next recovery step. Do not modify files.
 ```
 
 Codex-safe checklist:
 
 - Restate `read-only` when you want analysis.
 - Start a fresh session when switching from generation to review.
-- Inspect diffs after every `cf generate:` pass before asking for the next change.
+- Inspect diffs after every implementation pass before asking for the next change.
 - If source-of-truth files changed, regenerate host integrations before trusting host surfaces again.
 - Use `/clear` only when that host surface exposes it.
 
@@ -2391,13 +2296,13 @@ After the Todo project has code and evidence, ask Constructor Studio to explain 
 Claude Code prompt:
 
 ```text
-/cf analyze: explain the current Todo app architecture, evidence chain, and review status for a new teammate. Do not modify files.
+/cf-explain explain the current Todo app architecture, evidence chain, and review status for a new teammate. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: explain the current Todo app architecture, evidence chain, and review status for a new teammate. Do not modify files.
+$cf-explain explain the current Todo app architecture, evidence chain, and review status for a new teammate. Do not modify files.
 ```
 
 Expected result:
@@ -2412,14 +2317,14 @@ Checkpoint:
 
 ### Lesson 8.2. Review-Ready Explain Package
 
-Keep Module 8 interactive by default. Use `cf analyze: explain` when a teammate needs a live walkthrough or onboarding conversation.
+Keep Module 8 interactive by default. Use `cf-explain` when a teammate needs a live walkthrough or onboarding conversation.
 
-Use `cf generate: explain package` here only when the Todo project is already review-ready and you want to package existing evidence into durable docs. If you want to change how explain packaging works, or use explain-package authoring as an extension exercise, treat that as Module 9 bridge work instead of normal onboarding.
+Use `cf-explain` (package mode) here only when the Todo project is already review-ready and you want to package existing evidence into durable docs. If you want to change how explain packaging works, or use explain-package authoring as an extension exercise, treat that as Module 9 bridge work instead of normal onboarding.
 
 Claude Code prompt:
 
 ```text
-/cf generate: explain package for the Todo app handoff.
+/cf-explain build the explain handoff package for the Todo app.
 Audience: teammate joining the project.
 Scope: Todo SDLC artifact chain, implemented Todo backend/API slice, React UI slice, validation output, traceability evidence, and review handoff.
 Do not invent behavior that is not in the repo.
@@ -2428,7 +2333,7 @@ Do not invent behavior that is not in the repo.
 Codex prompt:
 
 ```text
-$cf generate: explain package for the Todo app handoff.
+$cf-explain build the explain handoff package for the Todo app.
 Audience: teammate joining the project.
 Scope: Todo SDLC artifact chain, implemented Todo backend/API slice, React UI slice, validation output, traceability evidence, and review handoff.
 Do not invent behavior that is not in the repo.
@@ -2498,22 +2403,22 @@ Checkpoint:
 
 Use the right review lens before rewriting behavior:
 
-- Use `cf pdsl:` when the target behaves like an instruction contract, state machine, menu, or workflow router.
-- Use `cf analyze:` semantic review when the main risk is ambiguity, weak UX, unsafe write behavior, or missing approval boundaries.
+- Use `cf-write-skills` when the target behaves like an instruction contract, state machine, menu, or workflow router (it runs the PDSL-aware prompt/workflow/skill review); use `cfs pdsl validate` for deterministic PDSL block validation.
+- Use `cf-write-skills` semantic review when the main risk is ambiguity, weak UX, unsafe write behavior, or missing approval boundaries.
 - Use a prompt bug-finding review when you suspect hidden failure modes, contradictory routing, unsafe recovery, or regressions outside the happy path.
 
-Use `cf pdsl:` when the target behaves like an instruction contract.
+Use `cf-write-skills` when the target behaves like an instruction contract.
 
 Claude Code prompt:
 
 ```text
-/cf pdsl: review the project instruction or workflow file for state-machine correctness, unsafe defaults, missing stop points, and unclear user prompts.
+/cf-write-skills review the project instruction or workflow file for state-machine correctness, unsafe defaults, missing stop points, and unclear user prompts.
 ```
 
 Codex prompt:
 
 ```text
-$cf pdsl: review the project instruction or workflow file for state-machine correctness, unsafe defaults, missing stop points, and unclear user prompts.
+$cf-write-skills review the project instruction or workflow file for state-machine correctness, unsafe defaults, missing stop points, and unclear user prompts.
 ```
 
 For a normal semantic review.
@@ -2521,13 +2426,13 @@ For a normal semantic review.
 Claude Code prompt:
 
 ```text
-/cf analyze: review this project instruction for ambiguity, missing contracts, interaction UX issues, and unsafe write behavior. Do not modify files.
+/cf-write-skills review this project instruction for ambiguity, missing contracts, interaction UX issues, and unsafe write behavior. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review this project instruction for ambiguity, missing contracts, interaction UX issues, and unsafe write behavior. Do not modify files.
+$cf-write-skills review this project instruction for ambiguity, missing contracts, interaction UX issues, and unsafe write behavior. Do not modify files.
 ```
 
 For a prompt bug-finding lens.
@@ -2535,13 +2440,13 @@ For a prompt bug-finding lens.
 Claude Code prompt:
 
 ```text
-/cf analyze: review this project instruction for prompt bugs, hidden failure modes, contradictory routing, and unsafe recovery behavior. Do not modify files.
+/cf-write-skills review this project instruction for prompt bugs, hidden failure modes, contradictory routing, and unsafe recovery behavior. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review this project instruction for prompt bugs, hidden failure modes, contradictory routing, and unsafe recovery behavior. Do not modify files.
+$cf-write-skills review this project instruction for prompt bugs, hidden failure modes, contradictory routing, and unsafe recovery behavior. Do not modify files.
 ```
 
 Expected result:
@@ -2562,26 +2467,26 @@ Use this exercise after any prompt, workflow, or agent review.
 Claude Code prompt:
 
 ```text
-/cf analyze: convert these approved prompt/workflow/agent review findings into a bounded remediation handoff.
+/cf-write-skills convert these approved prompt/workflow/agent review findings into a bounded remediation handoff.
 Return:
 - the exact finding IDs or quoted findings in scope;
 - the exact source-of-truth files to edit;
 - the approvals that must exist before writing;
 - the validation or read-back steps required after the fix;
-- a final `cf generate:` fix prompt that does not widen scope.
+- a final `cf-coding` fix prompt that does not widen scope.
 Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: convert these approved prompt/workflow/agent review findings into a bounded remediation handoff.
+$cf-write-skills convert these approved prompt/workflow/agent review findings into a bounded remediation handoff.
 Return:
 - the exact finding IDs or quoted findings in scope;
 - the exact source-of-truth files to edit;
 - the approvals that must exist before writing;
 - the validation or read-back steps required after the fix;
-- a final `cf generate:` fix prompt that does not widen scope.
+- a final `cf-coding` fix prompt that does not widen scope.
 Do not modify files.
 ```
 
@@ -2602,7 +2507,7 @@ Every public Todo operation must have at least one validation or test note in th
 Claude Code prompt:
 
 ```text
-/cf generate: add a small project-local rule for Todo review evidence.
+/cf-write-skills add a small project-local rule for Todo review evidence.
 Scope:
 - rule only;
 - no product behavior change;
@@ -2612,7 +2517,7 @@ Scope:
 Codex prompt:
 
 ```text
-$cf generate: add a small project-local rule for Todo review evidence.
+$cf-write-skills add a small project-local rule for Todo review evidence.
 Scope:
 - rule only;
 - no product behavior change;
@@ -2742,6 +2647,8 @@ Checkpoint:
 
 ## Module 11. Capstone
 
+Context reset (optional): the capstone runs from the artifacts, plan, and code already on disk. Start it in a fresh chat to keep context lean — re-activate (`/cf`; on Codex also re-send `disable autonomous mode`) first.
+
 ### Capstone Goal
 
 Produce a review-ready Todo package.
@@ -2794,13 +2701,13 @@ If Studio or kit behavior looks stale, stop the capstone run, reinstall the pinn
 Claude Code prompt:
 
 ```text
-/cf analyze: review the Todo SDLC artifact chain for unclear scope, missing acceptance evidence, broken references, and unsupported assumptions. Include the brainstorm cache path or approved wrap-up summary only as original input evidence. Do not modify files.
+/cf-sdlc-change-impact-analysis review the Todo SDLC artifact chain for unclear scope, missing acceptance evidence, broken references, and unsupported assumptions. Include the brainstorm cache path or approved wrap-up summary only as original input evidence. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review the Todo SDLC artifact chain for unclear scope, missing acceptance evidence, broken references, and unsupported assumptions. Include the brainstorm cache path or approved wrap-up summary only as original input evidence. Do not modify files.
+$cf-sdlc-change-impact-analysis review the Todo SDLC artifact chain for unclear scope, missing acceptance evidence, broken references, and unsupported assumptions. Include the brainstorm cache path or approved wrap-up summary only as original input evidence. Do not modify files.
 ```
 
 If PRD, ADR, DESIGN, DECOMPOSITION, or FEATURE is missing, create or repair those artifacts before planning code. Do not implement from brainstorm output alone.
@@ -2809,14 +2716,14 @@ If PRD, ADR, DESIGN, DECOMPOSITION, or FEATURE is missing, create or repair thos
 
 If a current plan already exists, inspect `plan.toml` read-only first. Cite `plan.execution_status`, `plan.lifecycle_status`, and each `phases[].status` entry from disk before you choose the next phase.
 
-If no current plan exists, or the current plan is stale after a scope or architecture change, use `cf plan:` to create or revise it.
+If no current plan exists, or the current plan is stale after a scope or architecture change, use `cf-plan` to create or revise it.
 
 Create-plan prompt.
 
 Claude Code prompt:
 
 ```text
-/cf plan: create a Todo implementation plan with backend/API, React UI, validation, findings triage, and handoff phases.
+/cf-plan create a Todo implementation plan with backend/API, React UI, validation, findings triage, and handoff phases.
 Use the Todo FEATURE artifact as the governing implementation artifact and preserve SDLC `@cpt-*` traceability.
 Do not implement yet.
 ```
@@ -2824,7 +2731,7 @@ Do not implement yet.
 Codex prompt:
 
 ```text
-$cf plan: create a Todo implementation plan with backend/API, React UI, validation, findings triage, and handoff phases.
+$cf-plan create a Todo implementation plan with backend/API, React UI, validation, findings triage, and handoff phases.
 Use the Todo FEATURE artifact as the governing implementation artifact and preserve SDLC `@cpt-*` traceability.
 Do not implement yet.
 ```
@@ -2834,7 +2741,7 @@ Revise-plan prompt.
 Claude Code prompt:
 
 ```text
-/cf plan: revise the existing Todo implementation plan so it still has backend/API, React UI, validation, findings triage, and handoff phases.
+/cf-plan revise the existing Todo implementation plan so it still has backend/API, React UI, validation, findings triage, and handoff phases.
 Use the Todo FEATURE artifact as the governing implementation artifact and preserve SDLC `@cpt-*` traceability.
 Do not implement yet.
 ```
@@ -2842,7 +2749,7 @@ Do not implement yet.
 Codex prompt:
 
 ```text
-$cf plan: revise the existing Todo implementation plan so it still has backend/API, React UI, validation, findings triage, and handoff phases.
+$cf-plan revise the existing Todo implementation plan so it still has backend/API, React UI, validation, findings triage, and handoff phases.
 Use the Todo FEATURE artifact as the governing implementation artifact and preserve SDLC `@cpt-*` traceability.
 Do not implement yet.
 ```
@@ -2856,30 +2763,18 @@ find .cf-studio/.plans -name plan.toml -exec ls -t {} + | head -n 1
 ```
 
 Before executing a phase in the capstone, cite the exact `phases[].status` entries from `plan.toml` in `docs/course-notes.md` and justify why the selected phase is next.
-If your host offers guarded same-chat native execution for the selected compiled phase, use that. Otherwise use the new-chat startup prompt contract from Lesson 3.6 so the execution session reads `plan.toml`, resolves the phase from manifest state, updates status, and follows only the selected phase file. `cf plan:` is for plan creation or revision only.
+If your host offers guarded same-chat native execution for the selected compiled phase, use that. Otherwise use the new-chat startup prompt contract from Lesson 3.5 so the execution session reads `plan.toml`, resolves the phase from manifest state, updates status, and follows only the selected phase file. `cf-plan` is for plan creation or revision only.
 
 4. Implement or finish the backend/API slice.
 
-Read-only preflight first.
+`cf-sdlc-implement` reports the target files, validation commands, write scope, FEATURE-sync scope, and traceability coverage before it writes; approve those exact paths.
 
 Claude Code prompt:
 
 ```text
-/cf analyze: before any capstone backend write, propose the exact target files, validation commands, write scope, FEATURE artifact sync scope, and traceability coverage for the Todo backend/API slice. Do not modify files.
-```
-
-Codex prompt:
-
-```text
-$cf analyze: before any capstone backend write, propose the exact target files, validation commands, write scope, FEATURE artifact sync scope, and traceability coverage for the Todo backend/API slice. Do not modify files.
-```
-
-Claude Code prompt:
-
-```text
-/cf generate: implement or finish only the Todo TypeScript backend/API slice from the Todo FEATURE artifact.
+/cf-sdlc-implement implement or finish only the Todo TypeScript backend/API slice from the Todo FEATURE artifact.
 Approved write scope:
-- package.json, only to switch scripts.dev:api from the deferred Module 2 placeholder to the real backend entrypoint after the API exists
+- package.json, only to set scripts.dev:api to the real backend entrypoint after the API exists
 - src/server/index.ts
 - src/server/todoApi.ts
 - src/server/todoStore.ts
@@ -2899,9 +2794,9 @@ Update only the relevant FEATURE checkboxes/status after implementation and vali
 Codex prompt:
 
 ```text
-$cf generate: implement or finish only the Todo TypeScript backend/API slice from the Todo FEATURE artifact.
+$cf-sdlc-implement implement or finish only the Todo TypeScript backend/API slice from the Todo FEATURE artifact.
 Approved write scope:
-- package.json, only to switch scripts.dev:api from the deferred Module 2 placeholder to the real backend entrypoint after the API exists
+- package.json, only to set scripts.dev:api to the real backend entrypoint after the API exists
 - src/server/index.ts
 - src/server/todoApi.ts
 - src/server/todoStore.ts
@@ -2918,28 +2813,16 @@ Switch `scripts.dev:api` to the real API entrypoint, such as `tsx src/server/ind
 Update only the relevant FEATURE checkboxes/status after implementation and validation prove completion; otherwise leave them unchecked and record the gap.
 ```
 
-Replace the sample paths and commands with the exact preflight output before sending the real prompt.
+Replace the sample paths and commands with the exact paths the skill reports before sending the real prompt.
 
 5. Implement or finish the React UI slice.
 
-Read-only preflight first.
+`cf-sdlc-implement` reports the target files, validation commands, write scope, FEATURE-sync scope, and traceability coverage before it writes; approve those exact paths.
 
 Claude Code prompt:
 
 ```text
-/cf analyze: before any capstone UI write, propose the exact target files, validation commands, write scope, FEATURE artifact sync scope, and traceability coverage for the Todo React UI slice. Do not modify files.
-```
-
-Codex prompt:
-
-```text
-$cf analyze: before any capstone UI write, propose the exact target files, validation commands, write scope, FEATURE artifact sync scope, and traceability coverage for the Todo React UI slice. Do not modify files.
-```
-
-Claude Code prompt:
-
-```text
-/cf generate: implement or finish only the Todo React UI slice from the Todo FEATURE artifact.
+/cf-sdlc-implement implement or finish only the Todo React UI slice from the Todo FEATURE artifact.
 Approved write scope:
 - ui/src/App.tsx
 - ui/src/components/TodoList.tsx
@@ -2959,7 +2842,7 @@ Update only the relevant FEATURE checkboxes/status after implementation and vali
 Codex prompt:
 
 ```text
-$cf generate: implement or finish only the Todo React UI slice from the Todo FEATURE artifact.
+$cf-sdlc-implement implement or finish only the Todo React UI slice from the Todo FEATURE artifact.
 Approved write scope:
 - ui/src/App.tsx
 - ui/src/components/TodoList.tsx
@@ -2976,7 +2859,7 @@ In FULL traceability mode, preserve scope markers and per-instruction `@cpt-begi
 Update only the relevant FEATURE checkboxes/status after implementation and validation prove completion; otherwise leave them unchecked and record the gap.
 ```
 
-Replace the sample paths and commands with the exact preflight output before sending the real prompt.
+Replace the sample paths and commands with the exact paths the skill reports before sending the real prompt.
 
 6. Finish Module 7 evidence before the final validation pass.
 
@@ -3003,13 +2886,13 @@ Also run SDLC/traceability checks through the host or CLI surfaces available in 
 Claude Code prompt:
 
 ```text
-/cf analyze: validate code for the Todo FEATURE. Check `@cpt-*` marker references, missing implementations, orphan markers, and drift between code and FEATURE. Do not modify files.
+/cf-sdlc-implement validate code for the Todo FEATURE. Check `@cpt-*` marker references, missing implementations, orphan markers, and drift between code and FEATURE. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: validate code for the Todo FEATURE. Check `@cpt-*` marker references, missing implementations, orphan markers, and drift between code and FEATURE. Do not modify files.
+$cf-sdlc-implement validate code for the Todo FEATURE. Check `@cpt-*` marker references, missing implementations, orphan markers, and drift between code and FEATURE. Do not modify files.
 ```
 
 Run only commands your repo actually supports. `npm` is an example, not a law. If your repo uses `pnpm`, `yarn`, or direct package scripts, use the equivalent commands. For every unsupported command, record `N/A` and the reason in `docs/review-handoff.md`.
@@ -3026,13 +2909,13 @@ If you cannot prove one of the four core behaviors, the capstone is not passing 
 Claude Code prompt:
 
 ```text
-/cf analyze: review the final Todo app changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Focus on correctness, missing tests, scope creep, traceability gaps, validation gaps, review readiness, and remaining risk. Do not modify files.
+/cf-coding review the final Todo app changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Focus on correctness, missing tests, scope creep, traceability gaps, validation gaps, review readiness, and remaining risk. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review the final Todo app changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Focus on correctness, missing tests, scope creep, traceability gaps, validation gaps, review readiness, and remaining risk. Do not modify files.
+$cf-coding review the final Todo app changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Focus on correctness, missing tests, scope creep, traceability gaps, validation gaps, review readiness, and remaining risk. Do not modify files.
 ```
 
 9. Fix blockers.
@@ -3042,7 +2925,7 @@ Use the same tight blocker-fix template from Lesson 6.1. Example:
 Claude Code prompt:
 
 ```text
-/cf generate: fix only the blocker findings from the final Todo review.
+/cf-coding fix only the blocker findings from the final Todo review.
 Use the Todo FEATURE artifact as the governing implementation artifact.
 Finding IDs/text:
 - BLOCKER-1: createTodo accepts blank titles and violates the trimmed non-empty title rule.
@@ -3063,7 +2946,7 @@ After writing, report changed files, validation commands, and remaining risk.
 Codex prompt:
 
 ```text
-$cf generate: fix only the blocker findings from the final Todo review.
+$cf-coding fix only the blocker findings from the final Todo review.
 Use the Todo FEATURE artifact as the governing implementation artifact.
 Finding IDs/text:
 - BLOCKER-1: createTodo accepts blank titles and violates the trimmed non-empty title rule.
@@ -3094,13 +2977,13 @@ Then run the final post-fix semantic review.
 Claude Code prompt:
 
 ```text
-/cf analyze: review the final Todo app after blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Confirm whether the blocker findings are resolved, whether behavior proof is fresh, whether validation and traceability evidence are fresh, and whether any new scope creep or risk appeared. Do not modify files.
+/cf-coding review the final Todo app after blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Confirm whether the blocker findings are resolved, whether behavior proof is fresh, whether validation and traceability evidence are fresh, and whether any new scope creep or risk appeared. Do not modify files.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review the final Todo app after blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Confirm whether the blocker findings are resolved, whether behavior proof is fresh, whether validation and traceability evidence are fresh, and whether any new scope creep or risk appeared. Do not modify files.
+$cf-coding review the final Todo app after blocker fixes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD. Confirm whether the blocker findings are resolved, whether behavior proof is fresh, whether validation and traceability evidence are fresh, and whether any new scope creep or risk appeared. Do not modify files.
 ```
 
 `docs/review-handoff.md` must cite this post-fix review result before submission.
@@ -3131,13 +3014,13 @@ Fill `docs/review-handoff.md` with, at minimum:
 Claude Code prompt:
 
 ```text
-/cf analyze: review one proposed project-local Todo rule or prompt improvement. Keep it as governance, not product behavior.
+/cf-write-skills review one proposed project-local Todo rule or prompt improvement. Keep it as governance, not product behavior.
 ```
 
 Codex prompt:
 
 ```text
-$cf analyze: review one proposed project-local Todo rule or prompt improvement. Keep it as governance, not product behavior.
+$cf-write-skills review one proposed project-local Todo rule or prompt improvement. Keep it as governance, not product behavior.
 ```
 
 ### Capstone Rubric
@@ -3224,32 +3107,34 @@ Claude Code quick prompts:
 
 ```text
 /cf
-/cf brainstorm: brainstorm the PRD-level product requirements for the Todo app: actors, goals, functional requirements, non-goals, constraints, acceptance criteria, and product scope boundaries. Do not plan implementation yet
-/cf generate: make PRD for the Todo app from the approved brainstorm wrap-up
-/cf generate: make ADR and DESIGN for the Todo app from the PRD
-/cf generate: decompose the Todo DESIGN into ordered feature scope
-/cf generate: make FEATURE for todo-crud from DECOMPOSITION and DESIGN
-/cf plan: create a bounded implementation plan for the Todo FEATURE
-/cf generate: implement the approved Todo backend/API slice from the Todo FEATURE
-/cf generate: implement the approved Todo React UI slice from the Todo FEATURE
-/cf analyze: review the Todo changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD
-/cf analyze: validate code for the Todo FEATURE
+/cf-brainstorm brainstorm the PRD-level product requirements for the Todo app: actors, goals, functional requirements, non-goals, constraints, acceptance criteria, and product scope boundaries. Do not plan implementation yet
+/cf-sdlc-doc-prd make PRD for the Todo app from the approved brainstorm wrap-up
+/cf-sdlc-doc-adr make the ADR for the Todo app from the PRD
+/cf-sdlc-doc-design make the DESIGN for the Todo app from the PRD and ADR
+/cf-sdlc-decompose decompose the Todo DESIGN into ordered feature scope
+/cf-sdlc-doc-feature make FEATURE for todo-crud from DECOMPOSITION and DESIGN
+/cf-plan create a bounded implementation plan for the Todo FEATURE
+/cf-sdlc-implement implement the approved Todo backend/API slice from the Todo FEATURE
+/cf-sdlc-implement implement the approved Todo React UI slice from the Todo FEATURE
+/cf-coding review the Todo changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD
+/cf-sdlc-implement validate code for the Todo FEATURE
 ```
 
 Codex quick prompts:
 
 ```text
 $cf
-$cf brainstorm: brainstorm the PRD-level product requirements for the Todo app: actors, goals, functional requirements, non-goals, constraints, acceptance criteria, and product scope boundaries. Do not plan implementation yet
-$cf generate: make PRD for the Todo app from the approved brainstorm wrap-up
-$cf generate: make ADR and DESIGN for the Todo app from the PRD
-$cf generate: decompose the Todo DESIGN into ordered feature scope
-$cf generate: make FEATURE for todo-crud from DECOMPOSITION and DESIGN
-$cf plan: create a bounded implementation plan for the Todo FEATURE
-$cf generate: implement the approved Todo backend/API slice from the Todo FEATURE
-$cf generate: implement the approved Todo React UI slice from the Todo FEATURE
-$cf analyze: review the Todo changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD
-$cf analyze: validate code for the Todo FEATURE
+$cf-brainstorm brainstorm the PRD-level product requirements for the Todo app: actors, goals, functional requirements, non-goals, constraints, acceptance criteria, and product scope boundaries. Do not plan implementation yet
+$cf-sdlc-doc-prd make PRD for the Todo app from the approved brainstorm wrap-up
+$cf-sdlc-doc-adr make the ADR for the Todo app from the PRD
+$cf-sdlc-doc-design make the DESIGN for the Todo app from the PRD and ADR
+$cf-sdlc-decompose decompose the Todo DESIGN into ordered feature scope
+$cf-sdlc-doc-feature make FEATURE for todo-crud from DECOMPOSITION and DESIGN
+$cf-plan create a bounded implementation plan for the Todo FEATURE
+$cf-sdlc-implement implement the approved Todo backend/API slice from the Todo FEATURE
+$cf-sdlc-implement implement the approved Todo React UI slice from the Todo FEATURE
+$cf-coding review the Todo changes against the Todo FEATURE, DESIGN, DECOMPOSITION, and PRD
+$cf-sdlc-implement validate code for the Todo FEATURE
 ```
 
 Workspace-aware checks:
@@ -3262,15 +3147,15 @@ cfs map
 Claude Code prompt:
 
 ```text
-/cf auto-config
-/cf map: explain local or workspace traceability edges for the Todo feature
+/cf-auto-config
+/cf-map explain local or workspace traceability edges for the Todo feature
 ```
 
 Codex prompt:
 
 ```text
-$cf auto-config
-$cf map: explain local or workspace traceability edges for the Todo feature
+$cf-auto-config
+$cf-map explain local or workspace traceability edges for the Todo feature
 ```
 
 Course setup bootstrap:
@@ -3303,17 +3188,17 @@ cfs map
 Claude Code prompt:
 
 ```text
-/cf brainstorm: choose the smallest safe first Todo app slice
-/cf pdsl: review docs/project-workflow.md
-/cf generate: explain package for the Todo app handoff
+/cf-brainstorm choose the smallest safe first Todo app slice
+/cf-write-skills review docs/project-workflow.md
+/cf-explain build the explain handoff package for the Todo app
 ```
 
 Codex prompt:
 
 ```text
-$cf brainstorm: choose the smallest safe first Todo app slice
-$cf pdsl: review docs/project-workflow.md
-$cf generate: explain package for the Todo app handoff
+$cf-brainstorm choose the smallest safe first Todo app slice
+$cf-write-skills review docs/project-workflow.md
+$cf-explain build the explain handoff package for the Todo app
 ```
 
 ## Appendix B. Troubleshooting
@@ -3325,11 +3210,11 @@ $cf generate: explain package for the Todo app handoff
 | Host ignores activation | Regenerate host integrations, reopen or reload host, retry from repo root. In Claude Code use `/cf`; in Codex use `$cf`. |
 | Host writes when asked to analyze | Stop, inspect the diff, open a fresh session, restate read-only scope, and rerun the host gate before continuing. |
 | Write is blocked by approval or a safety gate | Narrow the requested file scope, confirm the write explicitly, and retry through the correct write-capable workflow instead of forcing it. |
-| Plan is too broad | Ask `cf analyze:` to review the plan, then revise with smaller phases. |
-| Validation fails | Triage with `cf analyze:`, then fix only blockers with `cf generate:`. |
+| Plan is too broad | Ask `cf-plan` to review the plan, then revise with smaller phases. |
+| Validation fails | Triage and fix only blockers with `cf-coding`. |
 | Local commands pass but CI fails | Compare the exact CI job command, package manager, working directory, environment, and workspace reachability. Record the mismatch in `docs/review-handoff.md` before claiming parity. |
 | Missing `npm` scripts | Use the repo's real package manager or equivalent script entry point (`pnpm`, `yarn`, task runner, or direct command). Mark unsupported examples as `N/A` with a reason. |
-| Input is too large for one review | Ask `cf analyze:` to summarize or split the input into smaller review or fix phases, then continue with the smallest safe unit. |
+| Input is too large for one review | Ask `cf-explore` to summarize or split the input into smaller review or fix phases, then continue with the smallest safe unit. |
 | Workspace source unreachable | Record degraded state, use `workspace-info`, compare with local-only validation. |
 | Review context is polluted | Start a fresh session or use host-specific clear behavior where available. |
 
@@ -3364,21 +3249,20 @@ Capability dispositions:
 - Branch material: brownfield retrofit, workspace federation, explain packaging, author extension, and team governance.
 - Added into core learning: SDLC artifact pipeline, plan lifecycle, routing/control plane, safety gates, host strategy, validation discipline, review discipline, traceability markers, and evidence capture in `docs/course-notes.md`.
 - Reference-only: `cfs mirror`, human language review notes, and Cypilot migration.
-- Excluded as canon: bare `cf workflow:` prompts as learner copy-paste examples. Course prompt cards use `/cf workflow:` for Claude Code and `$cf workflow:` for Codex.
+- Excluded as canon: bare `cf-<workflow>` prompts as learner copy-paste examples. Course prompt cards use `/cf-<workflow>` for Claude Code and `$cf-<workflow>` for Codex.
 
 ## Appendix D. Routing And Control-Plane Glossary
 
 Use this appendix when you need the under-the-hood states, not when you are simply trying to finish one bounded Todo phase.
 
-- `ProtocolGuard` runs first, resolves the CLI and repo state, and decides which workflow can run safely.
-- Routing is first-match.
-- Compound `find + fix` requests should begin with `cf analyze:` so the findings exist before the fix pass.
+- The `cf` skill loads its core rules at session start (`SessionInit` emits a load report), then `IntentRouting` offers the matching `cf-*` skill; there is no separate pre-routing guard unit.
+- Intent routing offers the most relevant `cf-*` skill (tagged `(suggested)` when your prompt carries an intent).
+- Compound `find + fix` requests go to `cf-coding`, which finds and then fixes through its review-fix loop.
 - The size gates are separate:
   - raw input over about `500` lines hits the pre-routing overflow gate;
   - analyze stays safest within about `2000` lines of single-context material;
-  - generate work estimated over about `2500` lines should escalate to `cf plan`, which can decompose into smaller phases.
+  - generate work estimated over about `2500` lines should escalate to `cf-plan`, which can decompose into smaller phases.
 - `CF_PHASE_GATE` controls whether writes are allowed.
 - `GIT_COMMIT_MODE` controls whether git actions may commit, stage, or do no git writes.
-- `SUB_AGENT_SESSION_APPROVED` records whether native sub-agent execution was approved for the current chat session.
+- `SUB_AGENTS_APPROVED` records whether native sub-agent execution was approved for the current chat session (with `SUB_AGENTS_INLINE` for the inline fallback).
 - `INLINE_FALLBACK` is per workflow run; when `true`, the host falls back to inline or sequential execution instead of native sub-agent dispatch.
-- `CF_BYPASS=on` is an explicit higher-risk state gate and should be treated as rare and auditable.
