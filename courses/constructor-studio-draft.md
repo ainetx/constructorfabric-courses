@@ -1,8 +1,8 @@
 # Constructor Studio Academy - Course Blueprint and Table of Contents
 
 > NOTE: These course materials are a draft, generated from the following source repositories:
-> - https://github.com/constructorfabric/cyber-constructor (to be renamed `constructor-studio`)
-> - https://github.com/constructorfabric/cyber-constructor-kit-sdlc (to be renamed `constructor-studio-kit-sdlc`)
+> - https://github.com/constructorfabric/studio
+> - https://github.com/constructorfabric/studio-kit-sdlc
 
 ## 1. Target Audience, Problem, and Solution
 
