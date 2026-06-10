@@ -132,6 +132,8 @@ Show Architects how Studio helps turn requirements and existing codebase context
 | 3:45-4:25 | In existing systems, Architects can use `cf-sdlc-reverse-engineer` to reconstruct design understanding from code and `cf-sdlc-change-impact-analysis` to estimate what a proposed change may touch across documents, components, and repositories. | Brownfield code turns into a design map with cross-repository impact links. | Brownfield needs maps |
 | 4:25-5:00 | For Architects, Constructor Studio is a way to slow the right things down: not delivery speed, but unreviewed assumptions. Templates, validation rules, design documents, and Architecture Decision Records support consistent, well-informed decisions with fewer invisible architecture gaps. | End with design decisions anchored to requirements, rationale, code, and downstream work. | Fewer invisible gaps |
 
+Production emphasis: show that design documents carry the implementation-focused architecture context, while Architecture Decision Records preserve decision history and rationale as linked evidence.
+
 ---
 
 ## Overview 5. Constructor Studio for DevLeads and Developers
