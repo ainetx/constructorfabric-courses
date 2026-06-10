@@ -49,7 +49,7 @@ Do not mention router-level workflow names in learner-facing video scripts.
 
 ---
 
-## Overview 1. Constructor Studio for a Mixed Audience
+## Overview 1. Constructor Studio
 
 ### Story Goal
 
