@@ -3,7 +3,7 @@
 <!-- toc -->
 
 - [Production Framing](#production-framing)
-- [Overview 1. Constructor Studio for a Mixed Audience](#overview-1-constructor-studio-for-a-mixed-audience)
+- [Overview 1. Constructor Studio](#overview-1-constructor-studio)
   - [Story Goal](#story-goal)
   - [Narrator Script and Visual Direction](#narrator-script-and-visual-direction)
 - [Overview 2. Constructor Studio for CTO and R&D Leaders](#overview-2-constructor-studio-for-cto-and-rd-leaders)
@@ -64,9 +64,10 @@ Explain why Constructor Studio exists for teams and organizations, not just for 
 | 1:10-1:45 | Tools like OpenSpec and similar systems can help teams produce structured specs. That is useful. But generating more documents is not the same as keeping an organization aligned, consistent, and reviewable across teams. | Show a “generate specs” machine producing clean documents, then zoom out to messy handoffs between PM, architecture, development, and QA. | Generation is not governance |
 | 1:45-2:20 | Constructor Studio is designed for that organizational layer. It gives teams a shared environment for AI-assisted delivery, where product work, architecture work, coding work, and QA work can stay connected. | The scattered files move into one shared delivery map with role lanes. | One shared delivery flow |
 | 2:20-3:05 | Studio is not only for one person writing better prompts. It is for collaboration between roles and between teams. Product Managers shape requirements. Architects turn intent into decisions and design. Developers implement from approved context. QA checks behavior against traceable evidence. | PM, Architect, Developer, and QA lanes connect through shared files. | Teams, not solo prompting |
-| 3:05-3:45 | The basic idea is simple: work is routed into the right workflow, with the right context, and with checks that make the result easier to inspect. Instead of one long chat, the team gets a repeatable path from intent to implementation and review. | A single chat thread transforms into a guided path: intent, design, feature, code, tests, review. | Right workflow, right context |
-| 3:45-4:25 | Studio is also customizable. An organization can adapt templates, rules, workflows, validation, and codebase conventions instead of throwing away its existing process. The default SDLC kit gives teams a starting point, not a prison. | A default workflow adapts into several company-specific variants. | Fit your process |
-| 4:25-5:00 | The outcome is control. AI can still help teams move faster, but the work becomes easier to connect, review, validate, and maintain. Constructor Studio turns AI-assisted output into a team delivery system. | End on a clean map where docs, code, tests, and review are connected. | Speed with control |
+| 3:05-3:45 | The basic idea is simple: work is routed into the right workflow, with the right context, and with checks that make the result easier to inspect. Instead of disconnected AI sessions across tools and teams, the organization gets a repeatable path from intent to implementation and review. | Scattered AI sessions across teams connect into a guided path: intent, design, feature, code, tests, review. | Right workflow, right context |
+| 3:45-4:25 | Studio works on top of the tools teams already like: Claude Code, GitHub Copilot, Cursor, and similar AI coding environments. It does not ask the organization to replace its technology stack just to get control over AI-assisted delivery. | Existing AI tools stay in place while Studio adds a workflow and evidence layer above them. | Keep your tools |
+| 4:25-4:45 | Studio is also customizable. An organization can adapt templates, rules, workflows, validation, and codebase conventions instead of throwing away its existing process. The default SDLC kit gives teams a starting point they can adapt. | A default workflow adapts into several company-specific variants. | Fit your process |
+| 4:45-5:00 | The outcome is control. AI can still help teams move faster, but the work becomes easier to connect, review, validate, and maintain. Constructor Studio turns AI-assisted output into a team delivery system. | End on a clean map where docs, code, tests, and review are connected. | Speed with control |
 
 ---
 

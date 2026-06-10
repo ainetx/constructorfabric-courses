@@ -1349,7 +1349,7 @@ Repository map
 | Constructor core | cyber-pilot, cyber-pilot-kit-sdlc | Inspect these first when you want to understand governed AI-assisted delivery, SDLC artifacts, traceability, validation, and example workflows. |
 | Constructor adjunct or reference | studio, cyber-pilot | Use these carefully as supporting or historical context unless current documentation shows a direct course use. |
 | Insight | insight, insight-front | Inspect these when you want to understand delivery analytics, identity resolution, dashboards, bottlenecks, and AI adoption measurement. |
-| Ware platform and tooling | cyberware-rust, cyberware-csharp | Inspect these when you want to understand reusable Cyber Ware foundations for enterprise-grade SaaS products, including backend framework and middleware, modern SaaS UI development, and related C# modules or platform components. |
+| Ware platform and tooling | cyberware-rust, constructorfabric-core-csharp | Inspect these when you want to understand reusable Cyber Ware foundations for enterprise-grade SaaS products, including backend framework and middleware, modern SaaS UI development, and related C# modules or platform components. |
 | Ware UI, docs, and standards | cybereare-frontx, DNA | Inspect these when you want to understand UI, development principles, guidelines, and instructions for multi-tenant SaaS platform and application development. |
 | Product and learning support | website, ai-courses | Use these for product positioning, course-production references,. |
 
@@ -1589,7 +1589,7 @@ placeholder, or legacy repositories as primary technical anchors.
 
 - **ai-courses**: <https://github.com/constructorfabric/ai-courses> - courses
 
-- **cyberware-csharp**: <https://github.com/constructorfabric/constructorfabric-core-csharp> -
+- **constructorfabric-core-csharp**: <https://github.com/constructorfabric/constructorfabric-core-csharp> -
   C# reference material or role-specific platform comparison
 
 Practical Ware learning path
